@@ -1,5 +1,6 @@
 import sys
 import json
+import os
 from PyQt5.QtWidgets import (
     QApplication,
     QWidget,
@@ -50,7 +51,7 @@ class BarbershopApp(QMainWindow):
         super().__init__()
 
         self.setWindowTitle("Beko Barber")
-        self.setGeometry(100, 100, 1000, 800)  # Increased window size
+        self.setGeometry(100, 100, 1000, 800)
 
         # Set default font
         font = QFont("Arial", 12)
@@ -70,12 +71,13 @@ class BarbershopApp(QMainWindow):
 
         # Add logo
         self.logo_label = QLabel()
-        self.logo_pixmap = QPixmap("beko.jpg").scaled(300, 100, Qt.KeepAspectRatio)  
+        self.logo_pixmap = QPixmap(self.resource_path("beko.jpg")).scaled(300, 100, Qt.KeepAspectRatio)
         self.logo_label.setPixmap(self.logo_pixmap)
-        self.logo_label.setAlignment(Qt.AlignCenter)  
+        self.logo_label.setAlignment(Qt.AlignCenter)
+        self.layout.addWidget(self.logo_label)  # Don't forget to add logo_label to layout
 
         # Set application icon
-        self.setWindowIcon(QIcon("beko.jpg"))  
+        self.setWindowIcon(QIcon(self.resource_path("beko.jpg")))  
 
         # Create the tab widget
         self.tab_widget = QTabWidget()
@@ -88,6 +90,14 @@ class BarbershopApp(QMainWindow):
         self.tab_widget.addTab(self.packages_tab, "الباقات")
         self.tab_widget.addTab(self.inventory_tab, "المخزون")
         self.tab_widget.addTab(self.earnings_tab, "الأرباح")
+        
+    def resource_path(self, relative_path):
+        """ Get absolute path to resource, works for dev and for PyInstaller """
+        try:
+            base_path = sys._MEIPASS
+        except Exception:
+            base_path = os.path.abspath(".")
+        return os.path.join(base_path, relative_path)
 
     def closeEvent(self, event):
         save_data(self.data)
