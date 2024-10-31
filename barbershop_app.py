@@ -1,6 +1,7 @@
 import sys
 import json
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTabWidget, QWidget, QVBoxLayout, QLabel, QPushButton, QLineEdit, QFormLayout, QMessageBox, QTableWidget, QTableWidgetItem, QHBoxLayout
+from PyQt5.QtGui import QFont
 from datetime import datetime
 
 DATA_FILE = "barbershop_data.json"
@@ -28,8 +29,12 @@ class BarbershopApp(QMainWindow):
         super().__init__()
         
         self.setWindowTitle("Barbershop Management System")
-        self.setGeometry(100, 100, 800, 600)
-        
+        self.setGeometry(100, 100, 1000, 800)  # Increased window size
+
+        # Set default font
+        font = QFont("Arial", 12)
+        self.setFont(font)
+
         self.data = load_data()
         
         self.central_widget = QTabWidget()
@@ -227,59 +232,82 @@ class InventoryTab(QWidget):
             
             self.inventory_table.item(row, 1).setText(str(new_quantity))
             component_name = self.inventory_table.item(row, 0).text()
+
             for item in self.data["inventory"]:
                 if item["component"] == component_name:
                     item["quantity"] = new_quantity
-                    break
-    
+
     def save_data(self):
-        with open('data.json', 'w') as json_file:
-            json.dump(self.data, json_file, indent=4)
-        QMessageBox.information(self, "Data Saved", "Inventory changes have been saved successfully.")
-
-
+        save_data(self.data)
+        QMessageBox.information(self, "Data Saved", "Inventory data saved successfully.")
 
 class EarningsTab(QWidget):
     def __init__(self, data):
         super().__init__()
         self.data = data
-        
         self.layout = QVBoxLayout()
-        self.earnings_table = QTableWidget()
-        self.earnings_table.setColumnCount(2)
-        self.earnings_table.setHorizontalHeaderLabels(["Date", "Amount"])
-        
-        self.layout.addWidget(self.earnings_table)
 
-        self.total_earnings_label = QLabel("Total Earnings: $0")
+        self.total_earnings_label = QLabel("Total Earnings: $0.00")
         self.layout.addWidget(self.total_earnings_label)
 
-        self.setLayout(self.layout)
+        self.earnings_table = QTableWidget()
+        self.earnings_table.setColumnCount(2)
+        self.earnings_table.setHorizontalHeaderLabels(["Date", "Earnings"])
+        self.layout.addWidget(self.earnings_table)
+
+        # Add the Remove button
+        self.remove_earning_button = QPushButton("Remove Selected Earning")
+        self.remove_earning_button.clicked.connect(self.remove_earning)
+        self.layout.addWidget(self.remove_earning_button)
 
         self.load_earnings_to_table()
-        self.update_total_earnings()
+        
+        self.setLayout(self.layout)
 
     def load_earnings_to_table(self):
+        total_earnings = 0
         for earning in self.data.get("earnings", []):
             row_position = self.earnings_table.rowCount()
             self.earnings_table.insertRow(row_position)
             self.earnings_table.setItem(row_position, 0, QTableWidgetItem(earning["date"]))
             self.earnings_table.setItem(row_position, 1, QTableWidgetItem(str(earning["amount"])))
+            total_earnings += earning["amount"]
+
+        self.update_total_earnings(total_earnings)
 
     def add_earning(self, amount):
-        earning_data = {"date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"), "amount": float(amount)}
+        date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        earning_data = {"date": date, "amount": float(amount)}
         self.data["earnings"].append(earning_data)
-
+        
         row_position = self.earnings_table.rowCount()
         self.earnings_table.insertRow(row_position)
-        self.earnings_table.setItem(row_position, 0, QTableWidgetItem(earning_data["date"]))
-        self.earnings_table.setItem(row_position, 1, QTableWidgetItem(str(earning_data["amount"])))
+        self.earnings_table.setItem(row_position, 0, QTableWidgetItem(date))
+        self.earnings_table.setItem(row_position, 1, QTableWidgetItem(amount))
 
-        self.update_total_earnings()
+        # Update total earnings
+        total_earnings = sum(earning["amount"] for earning in self.data.get("earnings", []))
+        self.update_total_earnings(total_earnings)
 
-    def update_total_earnings(self):
-        total = sum(earning["amount"] for earning in self.data["earnings"])
+    def update_total_earnings(self, total):
         self.total_earnings_label.setText(f"Total Earnings: ${total:.2f}")
+
+    def remove_earning(self):
+        current_row = self.earnings_table.currentRow()
+        if current_row != -1:
+            # Get the amount of the earning to be removed
+            amount = float(self.earnings_table.item(current_row, 1).text())
+            # Remove the earning from data
+            self.data["earnings"].pop(current_row)
+            # Remove the row from the table
+            self.earnings_table.removeRow(current_row)
+            # Update total earnings
+            total_earnings = sum(earning["amount"] for earning in self.data.get("earnings", []))
+            self.update_total_earnings(total_earnings)
+            QMessageBox.information(self, "Earning Removed", f"Earning of ${amount:.2f} removed successfully.")
+        else:
+            QMessageBox.warning(self, "Selection Error", "Please select an earning to remove.")
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
