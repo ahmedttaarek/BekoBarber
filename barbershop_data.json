@@ -15,5 +15,10 @@
             "quantity": 18
         }
     ],
-    "earnings": []
+    "earnings": [
+        {
+            "date": "2024-10-31 15:03:22",
+            "amount": 150.0
+        }
+    ]
 }
