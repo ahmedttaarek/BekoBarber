@@ -65,18 +65,28 @@ class PackagesTab(QWidget):
         form_layout.addRow("Description:", self.description_input)
         form_layout.addRow("Price:", self.price_input)
         
-        # Add a Checkout button
-        self.checkout_button = QPushButton("Checkout")
-        self.checkout_button.clicked.connect(self.checkout)
+        # Add buttons for adding package and checking out
+        self.add_package_button = QPushButton("Add Package")
+        self.add_package_button.clicked.connect(self.add_package)
         
-        # Add form and button to the layout
+        self.checkout_button = QPushButton("Checkout Selected Package")
+        self.checkout_button.clicked.connect(self.checkout)
+
+        # Packages table setup
+        self.packages_table = QTableWidget()
+        self.packages_table.setColumnCount(2)
+        self.packages_table.setHorizontalHeaderLabels(["Description", "Price"])
+        self.layout.addWidget(self.packages_table)
+
+        # Add form and buttons to the layout
         self.layout.addLayout(form_layout)
+        self.layout.addWidget(self.add_package_button)
         self.layout.addWidget(self.checkout_button)
         
         # Set the layout for the tab
         self.setLayout(self.layout)
 
-    def checkout(self):
+    def add_package(self):
         # Get input values
         description = self.description_input.text()
         price = self.price_input.text()
@@ -87,13 +97,32 @@ class PackagesTab(QWidget):
             return
         
         # Save the package data
-        self.data["packages"].append({"description": description, "price": price})
+        package_data = {"description": description, "price": price}
+        self.data["packages"].append(package_data)
         
-        # Print receipt logic placeholder
-        QMessageBox.information(self, "Receipt", f"Receipt Printed:\nDescription: {description}\nPrice: {price}")
-        # Reset fields after checkout
+        # Add package to the table for display
+        row_position = self.packages_table.rowCount()
+        self.packages_table.insertRow(row_position)
+        self.packages_table.setItem(row_position, 0, QTableWidgetItem(description))
+        self.packages_table.setItem(row_position, 1, QTableWidgetItem(price))
+        
+        # Confirm package addition
+        QMessageBox.information(self, "Package Added", f"Package Added:\nDescription: {description}\nPrice: {price}")
+        
+        # Reset fields after adding
         self.description_input.clear()
         self.price_input.clear()
+
+    def checkout(self):
+        # Get selected row to checkout
+        current_row = self.packages_table.currentRow()
+        if current_row != -1:
+            description = self.packages_table.item(current_row, 0).text()
+            price = self.packages_table.item(current_row, 1).text()
+            # Print receipt logic placeholder
+            QMessageBox.information(self, "Receipt", f"Receipt Printed:\nDescription: {description}\nPrice: {price}")
+        else:
+            QMessageBox.warning(self, "Selection Error", "Please select a package to checkout.")
 
 class InventoryTab(QWidget):
     def __init__(self, data):
@@ -215,19 +244,17 @@ class EarningsTab(QWidget):
         self.description_input.setPlaceholderText("Enter service/description")
         self.amount_input = QLineEdit()
         self.amount_input.setPlaceholderText("Enter amount")
-
+        
         # Buttons for adding and clearing earnings
         self.add_earning_button = QPushButton("Add Earning")
-        self.clear_earnings_button = QPushButton("Clear All Earnings")
-
-        # Display for total earnings
-        self.total_earnings_label = QLabel("Total Earnings: $0")
-
-        # Connect buttons to methods
         self.add_earning_button.clicked.connect(self.add_earning)
+        self.clear_earnings_button = QPushButton("Clear Earnings")
         self.clear_earnings_button.clicked.connect(self.clear_earnings)
 
-        # Layout for input fields and buttons
+        # Total earnings label
+        self.total_earnings_label = QLabel("Total Earnings: $0")
+
+        # Layout for inputs and buttons
         input_layout = QHBoxLayout()
         input_layout.addWidget(self.date_input)
         input_layout.addWidget(self.description_input)
@@ -235,59 +262,42 @@ class EarningsTab(QWidget):
         input_layout.addWidget(self.add_earning_button)
         input_layout.addWidget(self.clear_earnings_button)
 
-        # Add all elements to the main layout
+        # Add everything to the main layout
         self.layout.addLayout(input_layout)
         self.layout.addWidget(self.total_earnings_label)
         self.setLayout(self.layout)
 
-        # List to store earnings data
-        self.earnings_data = []
-
     def add_earning(self):
-        # Retrieve input values
+        # Get data from input fields
         date = self.date_input.text()
         description = self.description_input.text()
         amount = self.amount_input.text()
 
-        # Validation for non-empty fields and numeric amount
+        # Validate inputs
         if not date or not description or not amount.isdigit():
-            QMessageBox.warning(self, "Input Error", "Please enter valid date, description, and numeric amount.")
+            QMessageBox.warning(self, "Input Error", "Please enter valid date, description, and amount.")
             return
-
-        # Add data to table
+        
+        # Add to earnings table
         row_position = self.earnings_table.rowCount()
         self.earnings_table.insertRow(row_position)
         self.earnings_table.setItem(row_position, 0, QTableWidgetItem(date))
         self.earnings_table.setItem(row_position, 1, QTableWidgetItem(description))
-        self.earnings_table.setItem(row_position, 2, QTableWidgetItem(f"${amount}"))
-
-        # Append earnings data to list for total calculation
-        self.earnings_data.append(int(amount))
-
+        self.earnings_table.setItem(row_position, 2, QTableWidgetItem(amount))
+        
         # Update total earnings
-        self.update_total_earnings()
-
-        # Clear input fields after adding
+        total = sum(int(self.earnings_table.item(i, 2).text()) for i in range(row_position + 1))
+        self.total_earnings_label.setText(f"Total Earnings: ${total}")
+        
+        # Clear input fields
         self.date_input.clear()
         self.description_input.clear()
         self.amount_input.clear()
 
-    def update_total_earnings(self):
-        # Calculate total earnings and update label
-        total = sum(self.earnings_data)
-        self.total_earnings_label.setText(f"Total Earnings: ${total}")
-
     def clear_earnings(self):
-        # Confirm before clearing
-        reply = QMessageBox.question(self, "Clear Earnings", "Are you sure you want to clear all earnings?", 
-                                     QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-        
-        if reply == QMessageBox.Yes:
-            # Clear earnings table and data
-            self.earnings_table.setRowCount(0)
-            self.earnings_data.clear()
-            self.update_total_earnings()
-
+        # Clear the earnings table and reset total
+        self.earnings_table.setRowCount(0)
+        self.total_earnings_label.setText("Total Earnings: $0")
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
