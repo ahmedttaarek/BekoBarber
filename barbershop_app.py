@@ -47,7 +47,7 @@ def save_data(data):
 class BarbershopApp(QMainWindow):
     def __init__(self):
         super().__init__()
-        
+
         self.setWindowTitle("بيكو حلاق")
         self.setGeometry(100, 100, 1000, 800)  # Increased window size
 
@@ -56,10 +56,13 @@ class BarbershopApp(QMainWindow):
         self.setFont(font)
 
         self.data = load_data()
-        
+
+        # Set layout direction to right-to-left
+        self.setLayoutDirection(Qt.RightToLeft)
+
         self.central_widget = QTabWidget()
         self.setCentralWidget(self.central_widget)
-        
+
         self.earnings_tab = EarningsTab(self.data)
         self.packages_tab = PackagesTab(self.data, self.earnings_tab)
         self.inventory_tab = InventoryTab(self.data)
@@ -72,12 +75,7 @@ class BarbershopApp(QMainWindow):
         save_data(self.data)
         event.accept()
 
-from PyQt5.QtWidgets import (
-    QWidget, QVBoxLayout, QFormLayout, QLineEdit, QPushButton, QTableWidget, 
-    QTableWidgetItem, QSizePolicy, QHBoxLayout, QMessageBox
-)
-from PyQt5.QtCore import Qt, QSize
-from PyQt5.QtGui import QFont
+
 
 class PackagesTab(QWidget):
     def __init__(self, data, earnings_tab):
@@ -128,21 +126,29 @@ class PackagesTab(QWidget):
         self.packages_table.setColumnCount(2)
         self.packages_table.setHorizontalHeaderLabels(["الوصف", "السعر"])
 
+        # Set layout direction for the table
+        self.packages_table.setLayoutDirection(Qt.RightToLeft)
+
         # Adjust table size, font, and readability for large screens
-        self.packages_table.setFont(large_font)
+        self.packages_table.setFont(QFont("Arial", 18, QFont.Bold))  # Set larger and bold font
         self.packages_table.setMinimumSize(900, 500)
         self.packages_table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+
+        # Set equal column widths
+        column_width = 400  # Adjust this value as needed
+        self.packages_table.setColumnWidth(0, column_width)
+        self.packages_table.setColumnWidth(1, column_width)
 
         # Style the header
         header = self.packages_table.horizontalHeader()
         header.setStyleSheet("QHeaderView::section { background-color: #333; color: white; font-weight: bold; padding: 16px; }")
-        header.setFont(large_font)
+        header.setFont(QFont("Arial", 18, QFont.Bold))  # Header font size and style
         header.setStretchLastSection(True)
         
         # Row height and alternating colors with hover effect
         self.packages_table.verticalHeader().setDefaultSectionSize(50)
         self.packages_table.setAlternatingRowColors(True)
-        self.packages_table.setStyleSheet("""
+        self.packages_table.setStyleSheet(""" 
                 QTableWidget {
                     font-size: 18px;  /* Increased font size for table cells */
                     border: 1px solid #ddd;
@@ -237,7 +243,7 @@ class PackagesTab(QWidget):
             QMessageBox.warning(self, "خطأ في الاختيار", "يرجى اختيار باقة للحذف.")
 
 
-            
+
 class InventoryTab(QWidget):
     def __init__(self, data):
         super().__init__()
@@ -254,14 +260,14 @@ class InventoryTab(QWidget):
         self.inventory_table.setHorizontalHeaderLabels(["المكون", "الكمية", "الإجراءات"])
         self.inventory_table.setMinimumSize(800, 400)
         self.inventory_table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        
+
         # Style the header
         header = self.inventory_table.horizontalHeader()
         header.setStyleSheet("QHeaderView::section { background-color: #333; color: white; font-weight: bold; padding: 12px; }")
         header.setStretchLastSection(True)
 
         # Row height and alternating colors with hover effect
-        self.inventory_table.verticalHeader().setDefaultSectionSize(40)
+        self.inventory_table.verticalHeader().setDefaultSectionSize(50)  # Set row height
         self.inventory_table.setAlternatingRowColors(True)
         self.setStyleSheet("""
             QWidget {
@@ -281,6 +287,7 @@ class InventoryTab(QWidget):
                 font-size: 18px;  /* Larger font size for table cells */
                 border: 1px solid #ddd;
                 gridline-color: #ddd;
+                font-weight: bold; /* Bold font for table cells */
             }
             QHeaderView::section {
                 font-size: 18px;  /* Header font size */
@@ -291,6 +298,9 @@ class InventoryTab(QWidget):
             }
             QTableWidget::item {
                 padding: 10px;
+                min-width: 100px;  /* Minimum width for cells */
+                min-height: 50px;  /* Minimum height for cells */
+                font-weight: bold;  /* Bold font for table items */
             }
             QTableWidget::item:alternate {
                 background-color: #f9f9f9;
@@ -302,9 +312,6 @@ class InventoryTab(QWidget):
                 background-color: #f5f5f5;
             }
         """)
-
-# Adjust row height for better readability
-        self.inventory_table.verticalHeader().setDefaultSectionSize(50)
 
         self.layout.addWidget(self.inventory_table)
         self.load_inventory_to_table()
@@ -434,42 +441,68 @@ class EarningsTab(QWidget):
     def __init__(self, data):
         super().__init__()
         self.data = data
+
+        # Set layout direction to right-to-left for Arabic language support
+        self.setLayoutDirection(Qt.RightToLeft)
+
         self.layout = QVBoxLayout()
 
-        # Total earnings label
+        # Total earnings label with enhanced style
         self.total_earnings_label = QLabel("إجمالي الأرباح: $0.00")
+        self.total_earnings_label.setStyleSheet("font-size: 18px; font-weight: bold; color: #333;")
         self.layout.addWidget(self.total_earnings_label)
 
-        # Earnings table
+        # Earnings table with styled header and rows
         self.earnings_table = QTableWidget()
         self.earnings_table.setColumnCount(2)
         self.earnings_table.setHorizontalHeaderLabels(["التاريخ", "الأرباح"])
+        self.earnings_table.setMinimumSize(800, 400)
+        self.earnings_table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+
+        # Set equal column widths
+        self.earnings_table.setColumnWidth(0, 400)
+        self.earnings_table.setColumnWidth(1, 400)
+
+        # Style header
+        header = self.earnings_table.horizontalHeader()
+        header.setStyleSheet("QHeaderView::section { background-color: #333; color: white; font-weight: bold; padding: 12px; }")
+        header.setStretchLastSection(True)
+
+        # Row height and alternating colors with hover effect
+        self.earnings_table.verticalHeader().setDefaultSectionSize(40)
+        self.earnings_table.setAlternatingRowColors(True)
+        self.earnings_table.setStyleSheet("""
+            QTableWidget { border: 1px solid #ddd; gridline-color: #ddd; font-size: 14px; }
+            QTableWidget::item { padding: 8px; }
+            QTableWidget::item:alternate { background-color: #f9f9f9; }
+            QTableWidget::item:selected { background-color: #d9edf7; }
+            QTableWidget::item:hover { background-color: #f5f5f5; }
+        """)
+
         self.layout.addWidget(self.earnings_table)
+        self.load_earnings_to_table()
 
         # Horizontal layout for buttons
         button_layout = QHBoxLayout()
 
-        # Button for removing selected earning
+        # Customize button styles in EarningsTab
         self.remove_earning_button = QPushButton("إزالة الربح المحدد")
-        self.remove_earning_button.setFixedSize(QSize(150, 35))
+        self.remove_earning_button.setFixedSize(QSize(180, 40))
         self.remove_earning_button.setStyleSheet("background-color: #f44336; color: white; border: none; border-radius: 5px;")
         self.remove_earning_button.clicked.connect(self.remove_earning)
-        button_layout.addWidget(self.remove_earning_button)
 
-        # Button for removing all earnings
         self.remove_all_button = QPushButton("إزالة جميع الأرباح")
-        self.remove_all_button.setFixedSize(QSize(150, 35))
+        self.remove_all_button.setFixedSize(QSize(180, 40))
         self.remove_all_button.setStyleSheet("background-color: #f44336; color: white; border: none; border-radius: 5px;")
         self.remove_all_button.clicked.connect(self.remove_all_earnings)
+
+        # Center-align the buttons in the horizontal layout
+        button_layout.addStretch()
+        button_layout.addWidget(self.remove_earning_button)
         button_layout.addWidget(self.remove_all_button)
-
-        # Center the buttons in the horizontal layout
-        button_layout.setAlignment(Qt.AlignCenter)
-
-        # Add the button layout to the main layout
+        button_layout.addStretch()
         self.layout.addLayout(button_layout)
 
-        self.load_earnings_to_table()
         self.setLayout(self.layout)
 
     def load_earnings_to_table(self):
@@ -478,8 +511,17 @@ class EarningsTab(QWidget):
         for earning in self.data.get("earnings", []):
             row_position = self.earnings_table.rowCount()
             self.earnings_table.insertRow(row_position)
-            self.earnings_table.setItem(row_position, 0, QTableWidgetItem(earning["date"]))
-            self.earnings_table.setItem(row_position, 1, QTableWidgetItem(str(earning["amount"])))
+
+            date_item = QTableWidgetItem(earning["date"])
+            date_item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
+            date_item.setFont(QFont("Arial", 12, QFont.Bold))  # Set font to bold and size 12
+            self.earnings_table.setItem(row_position, 0, date_item)
+
+            amount_item = QTableWidgetItem(f"${earning['amount']:.2f}")
+            amount_item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
+            amount_item.setFont(QFont("Arial", 12, QFont.Bold))  # Set font to bold and size 12
+            self.earnings_table.setItem(row_position, 1, amount_item)
+
             total_earnings += earning["amount"]
 
         self.update_total_earnings(total_earnings)
@@ -488,11 +530,19 @@ class EarningsTab(QWidget):
         date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         earning_data = {"date": date, "amount": float(amount)}
         self.data["earnings"].append(earning_data)
-        
+
         row_position = self.earnings_table.rowCount()
         self.earnings_table.insertRow(row_position)
-        self.earnings_table.setItem(row_position, 0, QTableWidgetItem(date))
-        self.earnings_table.setItem(row_position, 1, QTableWidgetItem(amount))
+
+        date_item = QTableWidgetItem(date)
+        date_item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        date_item.setFont(QFont("Arial", 12, QFont.Bold))  # Set font to bold and size 12
+        self.earnings_table.setItem(row_position, 0, date_item)
+
+        amount_item = QTableWidgetItem(f"${float(amount):.2f}")
+        amount_item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        amount_item.setFont(QFont("Arial", 12, QFont.Bold))  # Set font to bold and size 12
+        self.earnings_table.setItem(row_position, 1, amount_item)
 
         # Update total earnings
         total_earnings = sum(earning["amount"] for earning in self.data.get("earnings", []))
@@ -504,13 +554,9 @@ class EarningsTab(QWidget):
     def remove_earning(self):
         current_row = self.earnings_table.currentRow()
         if current_row != -1:
-            # Get the amount of the earning to be removed
-            amount = float(self.earnings_table.item(current_row, 1).text())
-            # Remove the earning from data
+            amount = float(self.earnings_table.item(current_row, 1).text().replace("$", ""))
             self.data["earnings"].pop(current_row)
-            # Remove the row from the table
             self.earnings_table.removeRow(current_row)
-            # Update total earnings
             total_earnings = sum(earning["amount"] for earning in self.data.get("earnings", []))
             self.update_total_earnings(total_earnings)
             QMessageBox.information(self, "تمت الإزالة", f"تمت إزالة ربح قدره ${amount:.2f} بنجاح.")
@@ -522,9 +568,10 @@ class EarningsTab(QWidget):
                                         QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if confirm == QMessageBox.Yes:
             self.data["earnings"].clear()
-            self.earnings_table.setRowCount(0)  # Clear the table
-            self.update_total_earnings(0)  # Reset total earnings
+            self.earnings_table.setRowCount(0)
+            self.update_total_earnings(0)
             QMessageBox.information(self, "تمت الإزالة", "تمت إزالة جميع الأرباح.")
+
 
 
 if __name__ == "__main__":
