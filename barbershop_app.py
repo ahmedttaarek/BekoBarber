@@ -13,7 +13,9 @@ from PyQt5.QtWidgets import (
     QMainWindow,
     QTabWidget,
     QFormLayout,
-    QLineEdit
+    QLineEdit,
+    QHeaderView,
+    QSizePolicy
 )
 from PyQt5.QtGui import QFont
 from datetime import datetime
@@ -70,6 +72,13 @@ class BarbershopApp(QMainWindow):
         save_data(self.data)
         event.accept()
 
+from PyQt5.QtWidgets import (
+    QWidget, QVBoxLayout, QFormLayout, QLineEdit, QPushButton, QTableWidget, 
+    QTableWidgetItem, QSizePolicy, QHBoxLayout, QMessageBox
+)
+from PyQt5.QtCore import Qt, QSize
+from PyQt5.QtGui import QFont
+
 class PackagesTab(QWidget):
     def __init__(self, data, earnings_tab):
         super().__init__()
@@ -77,34 +86,80 @@ class PackagesTab(QWidget):
         self.earnings_tab = earnings_tab
         self.layout = QVBoxLayout()
 
+        # Set layout direction to right-to-left
+        self.setLayoutDirection(Qt.RightToLeft)
+
+        # Adjusted font for larger screens
+        large_font = QFont("Arial", 16)
+
         form_layout = QFormLayout()
         self.description_input = QLineEdit()
+        self.description_input.setFont(large_font)
         self.price_input = QLineEdit()
+        self.price_input.setFont(large_font)
         
         form_layout.addRow("الوصف:", self.description_input)
         form_layout.addRow("السعر:", self.price_input)
-        form_layout.setAlignment(Qt.AlignRight)  # Align the form layout to the right
+        form_layout.setAlignment(Qt.AlignRight)
 
-        # Customize button styles and sizes
+        # Customize button styles, sizes, and font
+        button_font = QFont("Arial", 14)
+        
         self.add_package_button = QPushButton("أضف باقة")
-        self.add_package_button.setFixedSize(QSize(180, 40))
+        self.add_package_button.setFont(button_font)
+        self.add_package_button.setFixedSize(QSize(200, 50))
         self.add_package_button.setStyleSheet("background-color: #4CAF50; color: white; border: none; border-radius: 5px;")
         self.add_package_button.clicked.connect(self.add_package)
 
         self.checkout_button = QPushButton("الدفع للباقة المختارة")
-        self.checkout_button.setFixedSize(QSize(220, 40))
+        self.checkout_button.setFont(button_font)
+        self.checkout_button.setFixedSize(QSize(250, 50))
         self.checkout_button.setStyleSheet("background-color: #2196F3; color: white; border: none; border-radius: 5px;")
         self.checkout_button.clicked.connect(self.checkout)
 
         self.delete_package_button = QPushButton("احذف الباقة المختارة")
-        self.delete_package_button.setFixedSize(QSize(200, 40))
+        self.delete_package_button.setFont(button_font)
+        self.delete_package_button.setFixedSize(QSize(240, 50))
         self.delete_package_button.setStyleSheet("background-color: #f44336; color: white; border: none; border-radius: 5px;")
         self.delete_package_button.clicked.connect(self.delete_package)
 
+        # Enhanced table style
         self.packages_table = QTableWidget()
         self.packages_table.setColumnCount(2)
         self.packages_table.setHorizontalHeaderLabels(["الوصف", "السعر"])
+
+        # Adjust table size, font, and readability for large screens
+        self.packages_table.setFont(large_font)
+        self.packages_table.setMinimumSize(900, 500)
+        self.packages_table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+
+        # Style the header
+        header = self.packages_table.horizontalHeader()
+        header.setStyleSheet("QHeaderView::section { background-color: #333; color: white; font-weight: bold; padding: 16px; }")
+        header.setFont(large_font)
+        header.setStretchLastSection(True)
         
+        # Row height and alternating colors with hover effect
+        self.packages_table.verticalHeader().setDefaultSectionSize(50)
+        self.packages_table.setAlternatingRowColors(True)
+        self.packages_table.setStyleSheet("""
+                QTableWidget {
+                    font-size: 18px;  /* Increased font size for table cells */
+                    border: 1px solid #ddd;
+                    gridline-color: #ddd;
+                }
+                QHeaderView::section {
+                    font-size: 18px;  /* Header font size */
+                    background-color: #333;
+                    color: white;
+                    font-weight: bold;
+                    padding: 15px;
+                }
+                QTableWidget::item {
+                    padding: 10px;
+                }
+            """)
+        self.packages_table.verticalHeader().setDefaultSectionSize(50)  # Adjust row height
         self.layout.addWidget(self.packages_table)
         self.layout.addLayout(form_layout)
 
@@ -125,13 +180,13 @@ class PackagesTab(QWidget):
             row_position = self.packages_table.rowCount()
             self.packages_table.insertRow(row_position)
             
-            # Create right-aligned items for each cell
+            # Right-aligned items
             description_item = QTableWidgetItem(package["description"])
-            description_item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)  # Align text to the right
+            description_item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
             self.packages_table.setItem(row_position, 0, description_item)
             
             price_item = QTableWidgetItem(str(package["price"]))
-            price_item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)  # Align text to the right
+            price_item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
             self.packages_table.setItem(row_position, 1, price_item)
 
     def add_package(self):
@@ -148,7 +203,6 @@ class PackagesTab(QWidget):
         row_position = self.packages_table.rowCount()
         self.packages_table.insertRow(row_position)
         
-        # Add the new package to the table with right alignment
         description_item = QTableWidgetItem(description)
         description_item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
         self.packages_table.setItem(row_position, 0, description_item)
@@ -183,18 +237,76 @@ class PackagesTab(QWidget):
             QMessageBox.warning(self, "خطأ في الاختيار", "يرجى اختيار باقة للحذف.")
 
 
+            
 class InventoryTab(QWidget):
     def __init__(self, data):
         super().__init__()
         self.data = data
 
+        # Set layout direction to right-to-left
+        self.setLayoutDirection(Qt.RightToLeft)
+
         self.layout = QVBoxLayout()
 
+        # Inventory table with enhanced style and layout
         self.inventory_table = QTableWidget()
         self.inventory_table.setColumnCount(3)
         self.inventory_table.setHorizontalHeaderLabels(["المكون", "الكمية", "الإجراءات"])
-        self.layout.addWidget(self.inventory_table)
+        self.inventory_table.setMinimumSize(800, 400)
+        self.inventory_table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        
+        # Style the header
+        header = self.inventory_table.horizontalHeader()
+        header.setStyleSheet("QHeaderView::section { background-color: #333; color: white; font-weight: bold; padding: 12px; }")
+        header.setStretchLastSection(True)
 
+        # Row height and alternating colors with hover effect
+        self.inventory_table.verticalHeader().setDefaultSectionSize(40)
+        self.inventory_table.setAlternatingRowColors(True)
+        self.setStyleSheet("""
+            QWidget {
+                font-size: 16px;  /* General font size */
+            }
+            QLabel, QLineEdit {
+                font-size: 18px;  /* Labels and input fields font size */
+            }
+            QPushButton {
+                font-size: 16px;  /* Button font size */
+            }
+        """)
+
+        # Inventory table styling
+        self.inventory_table.setStyleSheet("""
+            QTableWidget {
+                font-size: 18px;  /* Larger font size for table cells */
+                border: 1px solid #ddd;
+                gridline-color: #ddd;
+            }
+            QHeaderView::section {
+                font-size: 18px;  /* Header font size */
+                background-color: #333;
+                color: white;
+                font-weight: bold;
+                padding: 15px;
+            }
+            QTableWidget::item {
+                padding: 10px;
+            }
+            QTableWidget::item:alternate {
+                background-color: #f9f9f9;
+            }
+            QTableWidget::item:selected {
+                background-color: #d9edf7;
+            }
+            QTableWidget::item:hover {
+                background-color: #f5f5f5;
+            }
+        """)
+
+# Adjust row height for better readability
+        self.inventory_table.verticalHeader().setDefaultSectionSize(50)
+
+        self.layout.addWidget(self.inventory_table)
         self.load_inventory_to_table()
 
         self.component_input = QLineEdit()
@@ -202,14 +314,14 @@ class InventoryTab(QWidget):
 
         # Customize button styles in InventoryTab
         self.add_component_button = QPushButton("أضف مكون")
-        self.add_component_button.setFixedSize(QSize(150, 35))
+        self.add_component_button.setFixedSize(QSize(180, 40))
         self.add_component_button.setStyleSheet("background-color: #4CAF50; color: white; border: none; border-radius: 5px;")
-        self.add_component_button.clicked.connect(self.add_component)  # Connect the button to add_component method
+        self.add_component_button.clicked.connect(self.add_component)
 
         self.remove_component_button = QPushButton("احذف مكون")
-        self.remove_component_button.setFixedSize(QSize(150, 35))
+        self.remove_component_button.setFixedSize(QSize(180, 40))
         self.remove_component_button.setStyleSheet("background-color: #f44336; color: white; border: none; border-radius: 5px;")
-        self.remove_component_button.clicked.connect(self.remove_component)  # Connect the button to remove_component method
+        self.remove_component_button.clicked.connect(self.remove_component)
 
         self.layout.addWidget(QLabel("اسم المكون:"))
         self.layout.addWidget(self.component_input)
@@ -226,11 +338,10 @@ class InventoryTab(QWidget):
         self.setLayout(self.layout)
 
         self.save_button = QPushButton("احفظ التغييرات")
-        self.save_button.setFixedSize(QSize(150, 35))
+        self.save_button.setFixedSize(QSize(180, 40))
         self.save_button.setStyleSheet("background-color: #2196F3; color: white; border: none; border-radius: 5px;")
-        self.save_button.clicked.connect(self.save_data)  # Connect the button to save_data method
+        self.save_button.clicked.connect(self.save_data)
         self.layout.addWidget(self.save_button)
-
 
     def load_inventory_to_table(self):
         for item in self.data.get("inventory", []):
@@ -239,24 +350,38 @@ class InventoryTab(QWidget):
     def add_table_row(self, component, quantity):
         row_position = self.inventory_table.rowCount()
         self.inventory_table.insertRow(row_position)
-        self.inventory_table.setItem(row_position, 0, QTableWidgetItem(component))
-        self.inventory_table.setItem(row_position, 1, QTableWidgetItem(str(quantity)))
+        
+        component_item = QTableWidgetItem(component)
+        component_item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        self.inventory_table.setItem(row_position, 0, component_item)
+        
+        quantity_item = QTableWidgetItem(str(quantity))
+        quantity_item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        self.inventory_table.setItem(row_position, 1, quantity_item)
 
-        # Create a widget to hold the buttons
+        # Create the widget to hold the action buttons
         button_widget = QWidget()
         button_layout = QHBoxLayout(button_widget)
+        button_layout.setContentsMargins(0, 0, 0, 0)
+        button_layout.setSpacing(5)  # Add spacing between buttons
 
-        # Create the plus button
+        # Create and style the plus and minus buttons
         plus_button = QPushButton("+")
+        plus_button.setFixedSize(30, 30)
+        plus_button.setStyleSheet("background-color: #4CAF50; color: white; border-radius: 5px;")
         plus_button.clicked.connect(lambda: self.change_quantity(row_position, 1))
-        button_layout.addWidget(plus_button)
 
-        # Create the minus button
         minus_button = QPushButton("-")
+        minus_button.setFixedSize(30, 30)
+        minus_button.setStyleSheet("background-color: #f44336; color: white; border-radius: 5px;")
         minus_button.clicked.connect(lambda: self.change_quantity(row_position, -1))
+
+        # Add buttons to the layout
+        button_layout.addWidget(plus_button)
         button_layout.addWidget(minus_button)
 
-        # Set the button widget in the third column
+        # Center align the buttons in the widget
+        button_layout.setAlignment(Qt.AlignCenter)
         self.inventory_table.setCellWidget(row_position, 2, button_widget)
 
     def add_component(self):
@@ -287,22 +412,23 @@ class InventoryTab(QWidget):
         current_item = self.inventory_table.item(row, 1)
         if current_item:
             current_quantity = int(current_item.text())
-        new_quantity = current_quantity + change
-        
-        if new_quantity < 0:
-            QMessageBox.warning(self, "خطأ", "لا يمكن أن تكون الكمية أقل من صفر.")
-            return
-        
-        self.inventory_table.item(row, 1).setText(str(new_quantity))
-        component_name = self.inventory_table.item(row, 0).text()
+            new_quantity = current_quantity + change
+            
+            if new_quantity < 0:
+                QMessageBox.warning(self, "خطأ", "لا يمكن أن تكون الكمية أقل من صفر.")
+                return
+            
+            self.inventory_table.item(row, 1).setText(str(new_quantity))
+            component_name = self.inventory_table.item(row, 0).text()
 
-        for item in self.data["inventory"]:
-            if item["component"] == component_name:
-                item["quantity"] = new_quantity
+            for item in self.data["inventory"]:
+                if item["component"] == component_name:
+                    item["quantity"] = new_quantity
 
-    def save_data(self):  # Move this method into InventoryTab class
+    def save_data(self):
         save_data(self.data)
         QMessageBox.information(self, "تم الحفظ", "تم حفظ بيانات المخزون بنجاح.")
+
 
 class EarningsTab(QWidget):
     def __init__(self, data):
