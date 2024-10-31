@@ -19,9 +19,10 @@ from PyQt5.QtWidgets import (
     QSizePolicy
 )
 from PyQt5.QtGui import QFont, QPainter, QPixmap, QIcon  
-from PyQt5.QtCore import Qt, QSize
-from PyQt5.QtPrintSupport import QPrinter, QPrintDialog  
+from PyQt5.QtCore import Qt, QSize, QSizeF, QRect
+from PyQt5.QtPrintSupport import QPrinter, QPrintDialog, QPrintPreviewDialog  
 from datetime import datetime
+
 
 
 
@@ -284,45 +285,82 @@ class PackagesTab(QWidget):
         self.price_input.clear()
 
     def checkout(self):
-        current_row = self.packages_table.currentRow()
-        if current_row != -1:
-            description = self.packages_table.item(current_row, 0).text()
-            price = self.packages_table.item(current_row, 1).text()
+            current_row = self.packages_table.currentRow()
+            if current_row != -1:
+                description = self.packages_table.item(current_row, 0).text()
+                price = self.packages_table.item(current_row, 1).text()
 
-            # Create the receipt message
-            receipt_message = (
-                "عنوان: بيكو حلاق\n"
-                f"السعر: {price}\n"
-                f"الباقة: {description}\n"
-                "رسالة: صالون بيكو تشرف بوجود حضراتكم"
-            )
+                # Create the receipt message with line breaks for organization
+                receipt_message = (
+                    f"السعر: {price}\n\n"  # Price in Arabic
+                    f"الباقة: {description}\n\n"  # Package in Arabic
+                    "صالون بيكو تشرف بوجود حضراتكم"  # Footer in Arabic
+                )
 
-            # Ask the user to connect to the printer and print the receipt
-            self.print_receipt(receipt_message)
-            self.earnings_tab.add_earning(price)
-        else:
-            QMessageBox.warning(self, "خطأ في الاختيار", "يرجى اختيار باقة للدفع.")
+                # Preview the receipt before printing
+                self.preview_receipt(receipt_message)
+                # Add the earnings after printing is confirmed
+                self.earnings_tab.add_earning(price)
+            else:
+                QMessageBox.warning(self, "خطأ في الاختيار", "يرجى اختيار باقة للدفع.")
+
+    def preview_receipt(self, message):
+        # Create a printer object for previewing
+        printer = QPrinter(QPrinter.HighResolution)
+        
+        # Set the paper size for a small receipt (58 mm width)
+        custom_size = QSizeF(58, 200)  # 58 mm width, 200 mm height (or as needed)
+        printer.setPaperSize(custom_size, QPrinter.Millimeter)  # Set the custom size in millimeters
+
+        # Set up the print preview dialog
+        preview_dialog = QPrintPreviewDialog(printer, self)
+        preview_dialog.paintRequested.connect(lambda p: self.render_receipt(p, message))
+        preview_dialog.exec_()
+
+    def render_receipt(self, printer, message):
+        painter = QPainter(printer)
+
+        # Load and draw the logo centered at the top
+        logo = QIcon("beko.ico").pixmap(50, 50)  # Adjust icon size as needed
+        logo_x = (printer.pageRect().width() - logo.width()) // 2
+        painter.drawPixmap(logo_x, 10, logo)  # Draw the logo near the top
+
+        # Set up font for text (adjusted for visibility)
+        font = QFont("Arial", 12)  # Adjust font size as needed
+        painter.setFont(font)
+
+        # Draw the title "Beko Barber" below the logo, centered
+        title = "Beko Barber"
+        title_x = (printer.pageRect().width() - painter.fontMetrics().width(title)) // 2
+        painter.drawText(title_x, 70, title)  # Adjust Y position after the logo
+
+        # Starting Y position for receipt content
+        y = 100  # Adjusted Y position after the logo and title
+
+        # Draw each line of the message with increased spacing for readability
+        for line in message.split('\n'):
+            # Define a QRect for each line with right alignment
+            rect = QRect(10, y, printer.pageRect().width() - 20, 30)  # Bounding rectangle with margins
+            painter.drawText(rect, Qt.AlignRight | Qt.AlignVCenter, line)  # Align text to the right for Arabic
+            y += 40  # Adjust spacing between lines
+
+        painter.end()
 
     def print_receipt(self, message):
-        # Create a printer object
+        # Create a printer object for actual printing
         printer = QPrinter(QPrinter.HighResolution)
+        printer.setPaperSize(QSizeF(58, 200), QPrinter.Millimeter)  # Set size to match receipt printer width
 
-        # Show the print dialog
+        # Show the print dialog for printer selection and preview
         dialog = QPrintDialog(printer, self)
         if dialog.exec_() == QPrintDialog.Accepted:
             painter = QPainter(printer)
 
-            # Set the font for the printed text
-            font = QFont("Arial", 16)
-            painter.setFont(font)
-
-            # Draw the message on the printer
-            # You may want to adjust these coordinates to fit your layout
-            painter.drawText(100, 100, message)  # Adjust x, y coordinates as needed
-
-            # End the painting
+            # Render receipt in the same way as preview
+            self.render_receipt(printer, message)
+            
             painter.end()
-
+        
     def delete_package(self):
         current_row = self.packages_table.currentRow()
         if current_row != -1:
