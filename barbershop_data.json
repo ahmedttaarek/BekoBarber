@@ -7,34 +7,26 @@
         {
             "description": "\u0634\u0639\u0631 + \u0630\u0642\u0646 + \u0633\u0634\u0648\u0627\u0631",
             "price": 200.0
+        },
+        {
+            "description": "\u062d\u0645\u0627\u0645 \u0643\u0631\u064a\u0645",
+            "price": 50.0
         }
     ],
     "inventory": [
         {
             "component": "\u0641\u0648\u0637",
-            "quantity": 12
+            "quantity": 13
         },
         {
-            "component": "\u0643\u0631\u064a\u0645 \u0634\u0639\u0631",
-            "quantity": 18
+            "component": "Cream HairPalm",
+            "quantity": 20
         }
     ],
     "earnings": [
         {
-            "date": "2024-10-31 15:03:22",
-            "amount": 150.0
-        },
-        {
-            "amount": 150.0,
-            "date": "2024-10-31 16:27:46"
-        },
-        {
-            "date": "2024-10-31 18:04:42",
-            "amount": 150.0
-        },
-        {
-            "date": "2024-10-31 19:39:22",
-            "amount": 150.0
+            "date": "2024-10-31 19:55:49",
+            "amount": 50.0
         }
     ]
 }
