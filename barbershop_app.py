@@ -77,7 +77,7 @@ class BarbershopApp(QMainWindow):
         self.layout.addWidget(self.logo_label)  # Don't forget to add logo_label to layout
 
         # Set application icon
-        self.setWindowIcon(QIcon(self.resource_path("beko.jpg")))  
+        self.setWindowIcon(QIcon(self.resource_path("beko.ico")))  # Ensure you reference the ICO file
 
         # Create the tab widget
         self.tab_widget = QTabWidget()
