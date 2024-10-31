@@ -1,8 +1,26 @@
 import sys
 import json
-from PyQt5.QtWidgets import QApplication, QMainWindow, QTabWidget, QWidget, QVBoxLayout, QLabel, QPushButton, QLineEdit, QFormLayout, QMessageBox, QTableWidget, QTableWidgetItem, QHBoxLayout
+from PyQt5.QtWidgets import (
+    QApplication,
+    QWidget,
+    QVBoxLayout,
+    QHBoxLayout,
+    QPushButton,
+    QLabel,
+    QTableWidget,
+    QTableWidgetItem,
+    QMessageBox,
+    QMainWindow,
+    QTabWidget,
+    QFormLayout,
+    QLineEdit
+)
 from PyQt5.QtGui import QFont
 from datetime import datetime
+from PyQt5.QtCore import Qt, QSize
+
+
+
 
 DATA_FILE = "barbershop_data.json"
 
@@ -58,32 +76,46 @@ class PackagesTab(QWidget):
         self.data = data
         self.earnings_tab = earnings_tab
         self.layout = QVBoxLayout()
-        
+
         form_layout = QFormLayout()
         self.description_input = QLineEdit()
         self.price_input = QLineEdit()
+        
         form_layout.addRow("الوصف:", self.description_input)
         form_layout.addRow("السعر:", self.price_input)
-        
+        form_layout.setAlignment(Qt.AlignRight)  # Align the form layout to the right
+
+        # Customize button styles and sizes
         self.add_package_button = QPushButton("أضف باقة")
+        self.add_package_button.setFixedSize(QSize(180, 40))
+        self.add_package_button.setStyleSheet("background-color: #4CAF50; color: white; border: none; border-radius: 5px;")
         self.add_package_button.clicked.connect(self.add_package)
-        
+
         self.checkout_button = QPushButton("الدفع للباقة المختارة")
+        self.checkout_button.setFixedSize(QSize(220, 40))
+        self.checkout_button.setStyleSheet("background-color: #2196F3; color: white; border: none; border-radius: 5px;")
         self.checkout_button.clicked.connect(self.checkout)
 
         self.delete_package_button = QPushButton("احذف الباقة المختارة")
+        self.delete_package_button.setFixedSize(QSize(200, 40))
+        self.delete_package_button.setStyleSheet("background-color: #f44336; color: white; border: none; border-radius: 5px;")
         self.delete_package_button.clicked.connect(self.delete_package)
 
         self.packages_table = QTableWidget()
         self.packages_table.setColumnCount(2)
         self.packages_table.setHorizontalHeaderLabels(["الوصف", "السعر"])
-        self.layout.addWidget(self.packages_table)
-
-        self.layout.addLayout(form_layout)
-        self.layout.addWidget(self.add_package_button)
-        self.layout.addWidget(self.checkout_button)
-        self.layout.addWidget(self.delete_package_button)
         
+        self.layout.addWidget(self.packages_table)
+        self.layout.addLayout(form_layout)
+
+        button_layout = QHBoxLayout()
+        button_layout.addStretch()
+        button_layout.addWidget(self.add_package_button)
+        button_layout.addWidget(self.checkout_button)
+        button_layout.addWidget(self.delete_package_button)
+        button_layout.addStretch()
+        self.layout.addLayout(button_layout)
+
         self.setLayout(self.layout)
 
         self.load_packages_to_table()
@@ -92,9 +124,15 @@ class PackagesTab(QWidget):
         for package in self.data.get("packages", []):
             row_position = self.packages_table.rowCount()
             self.packages_table.insertRow(row_position)
-            self.packages_table.setItem(row_position, 0, QTableWidgetItem(package["description"]))
-            self.packages_table.setItem(row_position, 1, QTableWidgetItem(str(package["price"])))
-
+            
+            # Create right-aligned items for each cell
+            description_item = QTableWidgetItem(package["description"])
+            description_item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)  # Align text to the right
+            self.packages_table.setItem(row_position, 0, description_item)
+            
+            price_item = QTableWidgetItem(str(package["price"]))
+            price_item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)  # Align text to the right
+            self.packages_table.setItem(row_position, 1, price_item)
 
     def add_package(self):
         description = self.description_input.text()
@@ -109,8 +147,15 @@ class PackagesTab(QWidget):
         
         row_position = self.packages_table.rowCount()
         self.packages_table.insertRow(row_position)
-        self.packages_table.setItem(row_position, 0, QTableWidgetItem(description))
-        self.packages_table.setItem(row_position, 1, QTableWidgetItem(price))
+        
+        # Add the new package to the table with right alignment
+        description_item = QTableWidgetItem(description)
+        description_item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        self.packages_table.setItem(row_position, 0, description_item)
+        
+        price_item = QTableWidgetItem(price)
+        price_item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        self.packages_table.setItem(row_position, 1, price_item)
         
         QMessageBox.information(self, "تم إضافة الباقة", f"تمت إضافة الباقة:\nالوصف: {description}\nالسعر: {price}")
         
@@ -137,39 +182,55 @@ class PackagesTab(QWidget):
         else:
             QMessageBox.warning(self, "خطأ في الاختيار", "يرجى اختيار باقة للحذف.")
 
+
 class InventoryTab(QWidget):
     def __init__(self, data):
         super().__init__()
         self.data = data
-        
+
         self.layout = QVBoxLayout()
 
         self.inventory_table = QTableWidget()
         self.inventory_table.setColumnCount(3)
         self.inventory_table.setHorizontalHeaderLabels(["المكون", "الكمية", "الإجراءات"])
         self.layout.addWidget(self.inventory_table)
-        
+
         self.load_inventory_to_table()
 
         self.component_input = QLineEdit()
         self.quantity_input = QLineEdit()
+
+        # Customize button styles in InventoryTab
         self.add_component_button = QPushButton("أضف مكون")
-        self.add_component_button.clicked.connect(self.add_component)
+        self.add_component_button.setFixedSize(QSize(150, 35))
+        self.add_component_button.setStyleSheet("background-color: #4CAF50; color: white; border: none; border-radius: 5px;")
+        self.add_component_button.clicked.connect(self.add_component)  # Connect the button to add_component method
+
         self.remove_component_button = QPushButton("احذف مكون")
-        self.remove_component_button.clicked.connect(self.remove_component)
-        
+        self.remove_component_button.setFixedSize(QSize(150, 35))
+        self.remove_component_button.setStyleSheet("background-color: #f44336; color: white; border: none; border-radius: 5px;")
+        self.remove_component_button.clicked.connect(self.remove_component)  # Connect the button to remove_component method
+
         self.layout.addWidget(QLabel("اسم المكون:"))
         self.layout.addWidget(self.component_input)
         self.layout.addWidget(QLabel("الكمية:"))
         self.layout.addWidget(self.quantity_input)
-        self.layout.addWidget(self.add_component_button)
-        self.layout.addWidget(self.remove_component_button)
+
+        button_layout = QHBoxLayout()
+        button_layout.addStretch()
+        button_layout.addWidget(self.add_component_button)
+        button_layout.addWidget(self.remove_component_button)
+        button_layout.addStretch()
+        self.layout.addLayout(button_layout)
 
         self.setLayout(self.layout)
 
         self.save_button = QPushButton("احفظ التغييرات")
-        self.save_button.clicked.connect(self.save_data)  # This line is now correct
+        self.save_button.setFixedSize(QSize(150, 35))
+        self.save_button.setStyleSheet("background-color: #2196F3; color: white; border: none; border-radius: 5px;")
+        self.save_button.clicked.connect(self.save_data)  # Connect the button to save_data method
         self.layout.addWidget(self.save_button)
+
 
     def load_inventory_to_table(self):
         for item in self.data.get("inventory", []):
@@ -249,26 +310,40 @@ class EarningsTab(QWidget):
         self.data = data
         self.layout = QVBoxLayout()
 
+        # Total earnings label
         self.total_earnings_label = QLabel("إجمالي الأرباح: $0.00")
         self.layout.addWidget(self.total_earnings_label)
 
+        # Earnings table
         self.earnings_table = QTableWidget()
         self.earnings_table.setColumnCount(2)
         self.earnings_table.setHorizontalHeaderLabels(["التاريخ", "الأرباح"])
         self.layout.addWidget(self.earnings_table)
 
-        # Add the Remove button
-        self.remove_earning_button = QPushButton("إزالة الربح المحدد")
-        self.remove_earning_button.clicked.connect(self.remove_earning)
-        self.layout.addWidget(self.remove_earning_button)
+        # Horizontal layout for buttons
+        button_layout = QHBoxLayout()
 
-        # Add the Remove All button
+        # Button for removing selected earning
+        self.remove_earning_button = QPushButton("إزالة الربح المحدد")
+        self.remove_earning_button.setFixedSize(QSize(150, 35))
+        self.remove_earning_button.setStyleSheet("background-color: #f44336; color: white; border: none; border-radius: 5px;")
+        self.remove_earning_button.clicked.connect(self.remove_earning)
+        button_layout.addWidget(self.remove_earning_button)
+
+        # Button for removing all earnings
         self.remove_all_button = QPushButton("إزالة جميع الأرباح")
+        self.remove_all_button.setFixedSize(QSize(150, 35))
+        self.remove_all_button.setStyleSheet("background-color: #f44336; color: white; border: none; border-radius: 5px;")
         self.remove_all_button.clicked.connect(self.remove_all_earnings)
-        self.layout.addWidget(self.remove_all_button)
+        button_layout.addWidget(self.remove_all_button)
+
+        # Center the buttons in the horizontal layout
+        button_layout.setAlignment(Qt.AlignCenter)
+
+        # Add the button layout to the main layout
+        self.layout.addLayout(button_layout)
 
         self.load_earnings_to_table()
-        
         self.setLayout(self.layout)
 
     def load_earnings_to_table(self):
@@ -324,6 +399,7 @@ class EarningsTab(QWidget):
             self.earnings_table.setRowCount(0)  # Clear the table
             self.update_total_earnings(0)  # Reset total earnings
             QMessageBox.information(self, "تمت الإزالة", "تمت إزالة جميع الأرباح.")
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
