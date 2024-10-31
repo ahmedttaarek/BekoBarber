@@ -28,7 +28,7 @@ class BarbershopApp(QMainWindow):
     def __init__(self):
         super().__init__()
         
-        self.setWindowTitle("Barbershop Management System")
+        self.setWindowTitle("Bekoo Barber")
         self.setGeometry(100, 100, 1000, 800)  # Increased window size
 
         # Set default font
@@ -260,12 +260,18 @@ class EarningsTab(QWidget):
         self.remove_earning_button.clicked.connect(self.remove_earning)
         self.layout.addWidget(self.remove_earning_button)
 
+        # Add the Remove All button
+        self.remove_all_button = QPushButton("Remove All Earnings")
+        self.remove_all_button.clicked.connect(self.remove_all_earnings)
+        self.layout.addWidget(self.remove_all_button)
+
         self.load_earnings_to_table()
         
         self.setLayout(self.layout)
 
     def load_earnings_to_table(self):
         total_earnings = 0
+        self.earnings_table.setRowCount(0)  # Clear the table before loading
         for earning in self.data.get("earnings", []):
             row_position = self.earnings_table.rowCount()
             self.earnings_table.insertRow(row_position)
@@ -307,6 +313,16 @@ class EarningsTab(QWidget):
             QMessageBox.information(self, "Earning Removed", f"Earning of ${amount:.2f} removed successfully.")
         else:
             QMessageBox.warning(self, "Selection Error", "Please select an earning to remove.")
+
+    def remove_all_earnings(self):
+        confirm = QMessageBox.question(self, "Confirm Removal", "Are you sure you want to remove all earnings?", 
+                                        QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        if confirm == QMessageBox.Yes:
+            self.data["earnings"].clear()
+            self.earnings_table.setRowCount(0)  # Clear the table
+            self.update_total_earnings(0)  # Reset total earnings
+            QMessageBox.information(self, "All Earnings Removed", "All earnings have been removed.")
+
 
 
 if __name__ == "__main__":
