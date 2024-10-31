@@ -17,10 +17,10 @@ from PyQt5.QtWidgets import (
     QHeaderView,
     QSizePolicy
 )
-from PyQt5.QtGui import QFont
-from datetime import datetime
+from PyQt5.QtGui import QFont, QPainter  # Correctly import QPainter from QtGui
 from PyQt5.QtCore import Qt, QSize
-
+from PyQt5.QtPrintSupport import QPrinter, QPrintDialog  # Keep QPrinter and QPrintDialog here
+from datetime import datetime
 
 
 
@@ -48,7 +48,7 @@ class BarbershopApp(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.setWindowTitle("بيكو حلاق")
+        self.setWindowTitle("Beko Barber")
         self.setGeometry(100, 100, 1000, 800)  # Increased window size
 
         # Set default font
@@ -227,10 +227,40 @@ class PackagesTab(QWidget):
         if current_row != -1:
             description = self.packages_table.item(current_row, 0).text()
             price = self.packages_table.item(current_row, 1).text()
-            QMessageBox.information(self, "الإيصال", f"تم طباعة الإيصال:\nالوصف: {description}\nالسعر: {price}")
+
+            # Create the receipt message
+            receipt_message = (
+                "عنوان: بيكو حلاق\n"
+                f"السعر: {price}\n"
+                f"الباقة: {description}\n"
+                "رسالة: صالون بيكو تشرف بوجود حضراتكم"
+            )
+
+            # Ask the user to connect to the printer and print the receipt
+            self.print_receipt(receipt_message)
             self.earnings_tab.add_earning(price)
         else:
             QMessageBox.warning(self, "خطأ في الاختيار", "يرجى اختيار باقة للدفع.")
+
+    def print_receipt(self, message):
+        # Create a printer object
+        printer = QPrinter(QPrinter.HighResolution)
+
+        # Show the print dialog
+        dialog = QPrintDialog(printer, self)
+        if dialog.exec_() == QPrintDialog.Accepted:
+            painter = QPainter(printer)
+
+            # Set the font for the printed text
+            font = QFont("Arial", 16)
+            painter.setFont(font)
+
+            # Draw the message on the printer
+            # You may want to adjust these coordinates to fit your layout
+            painter.drawText(100, 100, message)  # Adjust x, y coordinates as needed
+
+            # End the painting
+            painter.end()
 
     def delete_package(self):
         current_row = self.packages_table.currentRow()
