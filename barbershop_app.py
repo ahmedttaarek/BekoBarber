@@ -1,5 +1,19 @@
 import sys
+import json
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTabWidget, QWidget, QVBoxLayout, QLabel, QPushButton, QLineEdit, QFormLayout, QMessageBox, QTableWidget, QTableWidgetItem, QHBoxLayout
+
+DATA_FILE = "barbershop_data.json"
+
+def load_data():
+    try:
+        with open(DATA_FILE, 'r') as file:
+            return json.load(file)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {"packages": [], "inventory": []}
+
+def save_data(data):
+    with open(DATA_FILE, 'w') as file:
+        json.dump(data, file, indent=4)
 
 class BarbershopApp(QMainWindow):
     def __init__(self):
@@ -9,6 +23,9 @@ class BarbershopApp(QMainWindow):
         self.setWindowTitle("Barbershop Management System")
         self.setGeometry(100, 100, 800, 600)
         
+        # Load data from file
+        self.data = load_data()
+        
         # Create a central widget and tab layout
         self.central_widget = QTabWidget()
         self.setCentralWidget(self.central_widget)
@@ -17,18 +34,24 @@ class BarbershopApp(QMainWindow):
         self.initUI()
     
     def initUI(self):
-        # Add tabs to the main window
-        self.packages_tab = PackagesTab()
-        self.inventory_tab = InventoryTab()
+        # Add tabs to the main window, passing loaded data
+        self.packages_tab = PackagesTab(self.data)
+        self.inventory_tab = InventoryTab(self.data)
         self.earnings_tab = EarningsTab()
 
         self.central_widget.addTab(self.packages_tab, "Packages")
         self.central_widget.addTab(self.inventory_tab, "Inventory")
         self.central_widget.addTab(self.earnings_tab, "Earnings")
+    
+    def closeEvent(self, event):
+        # Save data when the app is closed
+        save_data(self.data)
+        event.accept()
 
 class PackagesTab(QWidget):
-    def __init__(self):
+    def __init__(self, data):
         super().__init__()
+        self.data = data
         self.layout = QVBoxLayout()
         
         # Add form for entering package details
@@ -63,6 +86,9 @@ class PackagesTab(QWidget):
             QMessageBox.warning(self, "Input Error", "Please fill out all fields.")
             return
         
+        # Save the package data
+        self.data["packages"].append({"description": description, "price": price})
+        
         # Print receipt logic placeholder
         QMessageBox.information(self, "Receipt", f"Receipt Printed:\nDescription: {description}\nPrice: {price}")
         # Reset fields after checkout
@@ -70,8 +96,9 @@ class PackagesTab(QWidget):
         self.price_input.clear()
 
 class InventoryTab(QWidget):
-    def __init__(self):
+    def __init__(self, data):
         super().__init__()
+        self.data = data
         
         # Layout for the tab
         self.layout = QVBoxLayout()
@@ -81,6 +108,10 @@ class InventoryTab(QWidget):
         self.inventory_table.setColumnCount(2)
         self.inventory_table.setHorizontalHeaderLabels(["Component", "Quantity"])
         self.layout.addWidget(self.inventory_table)
+        
+        # Populate inventory table from loaded data
+        for item in self.data.get("inventory", []):
+            self.add_table_row(item["component"], item["quantity"])
 
         # Input fields for adding and updating items
         self.component_input = QLineEdit()
@@ -110,6 +141,12 @@ class InventoryTab(QWidget):
         self.layout.addLayout(input_layout)
         self.setLayout(self.layout)
 
+    def add_table_row(self, component, quantity):
+        row_position = self.inventory_table.rowCount()
+        self.inventory_table.insertRow(row_position)
+        self.inventory_table.setItem(row_position, 0, QTableWidgetItem(component))
+        self.inventory_table.setItem(row_position, 1, QTableWidgetItem(str(quantity)))
+
     def add_component(self):
         # Retrieve data from input fields
         component_name = self.component_input.text()
@@ -120,11 +157,9 @@ class InventoryTab(QWidget):
             QMessageBox.warning(self, "Input Error", "Please enter a valid component name and quantity.")
             return
         
-        # Add to table
-        row_position = self.inventory_table.rowCount()
-        self.inventory_table.insertRow(row_position)
-        self.inventory_table.setItem(row_position, 0, QTableWidgetItem(component_name))
-        self.inventory_table.setItem(row_position, 1, QTableWidgetItem(quantity))
+        # Add to table and save to data
+        self.add_table_row(component_name, quantity)
+        self.data["inventory"].append({"component": component_name, "quantity": int(quantity)})
         
         # Clear input fields
         self.component_input.clear()
@@ -134,6 +169,9 @@ class InventoryTab(QWidget):
         # Get selected row to remove
         current_row = self.inventory_table.currentRow()
         if current_row != -1:
+            component_name = self.inventory_table.item(current_row, 0).text()
+            # Remove from data
+            self.data["inventory"] = [item for item in self.data["inventory"] if item["component"] != component_name]
             self.inventory_table.removeRow(current_row)
         else:
             QMessageBox.warning(self, "Selection Error", "Please select a component to remove.")
@@ -144,6 +182,12 @@ class InventoryTab(QWidget):
         if current_row != -1:
             new_quantity = self.quantity_input.text()
             if new_quantity.isdigit():
+                component_name = self.inventory_table.item(current_row, 0).text()
+                # Update data
+                for item in self.data["inventory"]:
+                    if item["component"] == component_name:
+                        item["quantity"] = int(new_quantity)
+                        break
                 self.inventory_table.setItem(current_row, 1, QTableWidgetItem(new_quantity))
                 self.quantity_input.clear()
             else:
