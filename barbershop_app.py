@@ -1,15 +1,25 @@
 import sys
 import json
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTabWidget, QWidget, QVBoxLayout, QLabel, QPushButton, QLineEdit, QFormLayout, QMessageBox, QTableWidget, QTableWidgetItem, QHBoxLayout
+from datetime import datetime
 
 DATA_FILE = "barbershop_data.json"
 
 def load_data():
     try:
         with open(DATA_FILE, 'r') as file:
-            return json.load(file)
+            data = json.load(file)
+            # Ensure all necessary keys exist
+            if "packages" not in data:
+                data["packages"] = []
+            if "inventory" not in data:
+                data["inventory"] = []
+            if "earnings" not in data:
+                data["earnings"] = []  # Ensure earnings key exists
+            return data
     except (FileNotFoundError, json.JSONDecodeError):
-        return {"packages": [], "inventory": []}
+        # Ensure the default structure contains all necessary keys
+        return {"packages": [], "inventory": [], "earnings": []}
 
 def save_data(data):
     with open(DATA_FILE, 'w') as file:
@@ -24,34 +34,32 @@ class BarbershopApp(QMainWindow):
         self.setGeometry(100, 100, 800, 600)
         
         # Load data from file
-        self.data = load_data()
+        self.data = load_data()  # This will ensure "earnings" exists
         
         # Create a central widget and tab layout
         self.central_widget = QTabWidget()
         self.setCentralWidget(self.central_widget)
         
-        # Add tabs
-        self.initUI()
-    
-    def initUI(self):
-        # Add tabs to the main window, passing loaded data
-        self.packages_tab = PackagesTab(self.data)
+        # Initialize tabs
+        self.earnings_tab = EarningsTab(self.data)
+        self.packages_tab = PackagesTab(self.data, self.earnings_tab)
         self.inventory_tab = InventoryTab(self.data)
-        self.earnings_tab = EarningsTab()
 
+        # Add tabs
         self.central_widget.addTab(self.packages_tab, "Packages")
         self.central_widget.addTab(self.inventory_tab, "Inventory")
         self.central_widget.addTab(self.earnings_tab, "Earnings")
-    
+
     def closeEvent(self, event):
         # Save data when the app is closed
         save_data(self.data)
         event.accept()
 
 class PackagesTab(QWidget):
-    def __init__(self, data):
+    def __init__(self, data, earnings_tab):
         super().__init__()
         self.data = data
+        self.earnings_tab = earnings_tab  # Store the reference to EarningsTab
         self.layout = QVBoxLayout()
         
         # Add form for entering package details
@@ -65,12 +73,15 @@ class PackagesTab(QWidget):
         form_layout.addRow("Description:", self.description_input)
         form_layout.addRow("Price:", self.price_input)
         
-        # Add buttons for adding package and checking out
+        # Add buttons for adding package, checking out, and deleting package
         self.add_package_button = QPushButton("Add Package")
         self.add_package_button.clicked.connect(self.add_package)
         
         self.checkout_button = QPushButton("Checkout Selected Package")
         self.checkout_button.clicked.connect(self.checkout)
+
+        self.delete_package_button = QPushButton("Delete Selected Package")
+        self.delete_package_button.clicked.connect(self.delete_package)
 
         # Packages table setup
         self.packages_table = QTableWidget()
@@ -82,9 +93,21 @@ class PackagesTab(QWidget):
         self.layout.addLayout(form_layout)
         self.layout.addWidget(self.add_package_button)
         self.layout.addWidget(self.checkout_button)
+        self.layout.addWidget(self.delete_package_button)
         
         # Set the layout for the tab
         self.setLayout(self.layout)
+
+        # Populate table with existing packages
+        self.load_packages_to_table()
+
+    def load_packages_to_table(self):
+        # Populate the table with packages stored in the data
+        for package in self.data.get("packages", []):
+            row_position = self.packages_table.rowCount()
+            self.packages_table.insertRow(row_position)
+            self.packages_table.setItem(row_position, 0, QTableWidgetItem(package["description"]))
+            self.packages_table.setItem(row_position, 1, QTableWidgetItem(str(package["price"])))
 
     def add_package(self):
         # Get input values
@@ -97,7 +120,7 @@ class PackagesTab(QWidget):
             return
         
         # Save the package data
-        package_data = {"description": description, "price": price}
+        package_data = {"description": description, "price": float(price)}
         self.data["packages"].append(package_data)
         
         # Add package to the table for display
@@ -121,8 +144,24 @@ class PackagesTab(QWidget):
             price = self.packages_table.item(current_row, 1).text()
             # Print receipt logic placeholder
             QMessageBox.information(self, "Receipt", f"Receipt Printed:\nDescription: {description}\nPrice: {price}")
+            
+            # Log earning to the EarningsTab
+            self.earnings_tab.add_earning(price)  # Access earnings_tab directly
+
         else:
             QMessageBox.warning(self, "Selection Error", "Please select a package to checkout.")
+
+    def delete_package(self):
+        # Get selected row to delete
+        current_row = self.packages_table.currentRow()
+        if current_row != -1:
+            # Remove from data
+            package_description = self.packages_table.item(current_row, 0).text()
+            self.data["packages"] = [pkg for pkg in self.data["packages"] if pkg["description"] != package_description]
+            self.packages_table.removeRow(current_row)
+            QMessageBox.information(self, "Package Deleted", f"Package Deleted: {package_description}")
+        else:
+            QMessageBox.warning(self, "Selection Error", "Please select a package to delete.")
 
 class InventoryTab(QWidget):
     def __init__(self, data):
@@ -199,9 +238,9 @@ class InventoryTab(QWidget):
         current_row = self.inventory_table.currentRow()
         if current_row != -1:
             component_name = self.inventory_table.item(current_row, 0).text()
-            # Remove from data
             self.data["inventory"] = [item for item in self.data["inventory"] if item["component"] != component_name]
             self.inventory_table.removeRow(current_row)
+            QMessageBox.information(self, "Component Removed", f"Component Removed: {component_name}")
         else:
             QMessageBox.warning(self, "Selection Error", "Please select a component to remove.")
 
@@ -209,98 +248,71 @@ class InventoryTab(QWidget):
         # Get selected row to update
         current_row = self.inventory_table.currentRow()
         if current_row != -1:
+            component_name = self.inventory_table.item(current_row, 0).text()
             new_quantity = self.quantity_input.text()
-            if new_quantity.isdigit():
-                component_name = self.inventory_table.item(current_row, 0).text()
-                # Update data
-                for item in self.data["inventory"]:
-                    if item["component"] == component_name:
-                        item["quantity"] = int(new_quantity)
-                        break
-                self.inventory_table.setItem(current_row, 1, QTableWidgetItem(new_quantity))
-                self.quantity_input.clear()
-            else:
+            
+            # Validation
+            if not new_quantity.isdigit():
                 QMessageBox.warning(self, "Input Error", "Please enter a valid quantity.")
+                return
+            
+            # Update the quantity in the table and data
+            self.inventory_table.item(current_row, 1).setText(new_quantity)
+            for item in self.data["inventory"]:
+                if item["component"] == component_name:
+                    item["quantity"] = int(new_quantity)
+                    break
+            
+            QMessageBox.information(self, "Quantity Updated", f"Quantity updated for: {component_name}")
+            self.quantity_input.clear()
         else:
             QMessageBox.warning(self, "Selection Error", "Please select a component to update.")
 
 class EarningsTab(QWidget):
-    def __init__(self):
+    def __init__(self, data):
         super().__init__()
+        self.data = data
         
-        # Main layout for the earnings tab
+        # Layout for the tab
         self.layout = QVBoxLayout()
 
-        # Table to display earnings with columns for Date, Service/Description, and Amount
+        # Earnings table setup
         self.earnings_table = QTableWidget()
-        self.earnings_table.setColumnCount(3)
-        self.earnings_table.setHorizontalHeaderLabels(["Date", "Service/Description", "Amount"])
+        self.earnings_table.setColumnCount(2)
+        self.earnings_table.setHorizontalHeaderLabels(["Date", "Earnings"])
         self.layout.addWidget(self.earnings_table)
-
-        # Inputs for adding new earnings entry
-        self.date_input = QLineEdit()
-        self.date_input.setPlaceholderText("Enter date (e.g., 2024-10-31)")
-        self.description_input = QLineEdit()
-        self.description_input.setPlaceholderText("Enter service/description")
-        self.amount_input = QLineEdit()
-        self.amount_input.setPlaceholderText("Enter amount")
         
-        # Buttons for adding and clearing earnings
-        self.add_earning_button = QPushButton("Add Earning")
-        self.add_earning_button.clicked.connect(self.add_earning)
-        self.clear_earnings_button = QPushButton("Clear Earnings")
-        self.clear_earnings_button.clicked.connect(self.clear_earnings)
+        # Populate earnings table from loaded data
+        for earning in self.data.get("earnings", []):
+            self.add_table_row(earning["date"], earning["amount"])
 
         # Total earnings label
         self.total_earnings_label = QLabel("Total Earnings: $0")
-
-        # Layout for inputs and buttons
-        input_layout = QHBoxLayout()
-        input_layout.addWidget(self.date_input)
-        input_layout.addWidget(self.description_input)
-        input_layout.addWidget(self.amount_input)
-        input_layout.addWidget(self.add_earning_button)
-        input_layout.addWidget(self.clear_earnings_button)
-
-        # Add everything to the main layout
-        self.layout.addLayout(input_layout)
         self.layout.addWidget(self.total_earnings_label)
+
+        # Set the layout for the tab
         self.setLayout(self.layout)
 
-    def add_earning(self):
-        # Get data from input fields
-        date = self.date_input.text()
-        description = self.description_input.text()
-        amount = self.amount_input.text()
-
-        # Validate inputs
-        if not date or not description or not amount.isdigit():
-            QMessageBox.warning(self, "Input Error", "Please enter valid date, description, and amount.")
-            return
-        
-        # Add to earnings table
+    def add_table_row(self, date, amount):
         row_position = self.earnings_table.rowCount()
         self.earnings_table.insertRow(row_position)
         self.earnings_table.setItem(row_position, 0, QTableWidgetItem(date))
-        self.earnings_table.setItem(row_position, 1, QTableWidgetItem(description))
-        self.earnings_table.setItem(row_position, 2, QTableWidgetItem(amount))
-        
-        # Update total earnings
-        total = sum(int(self.earnings_table.item(i, 2).text()) for i in range(row_position + 1))
-        self.total_earnings_label.setText(f"Total Earnings: ${total}")
-        
-        # Clear input fields
-        self.date_input.clear()
-        self.description_input.clear()
-        self.amount_input.clear()
+        self.earnings_table.setItem(row_position, 1, QTableWidgetItem(str(amount)))
 
-    def clear_earnings(self):
-        # Clear the earnings table and reset total
-        self.earnings_table.setRowCount(0)
-        self.total_earnings_label.setText("Total Earnings: $0")
+    def add_earning(self, amount):
+        # Get the current date for the earning entry
+        date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        self.add_table_row(date, amount)
+
+        # Update the total earnings
+        total = sum(float(self.earnings_table.item(row, 1).text()) for row in range(self.earnings_table.rowCount()))
+        self.total_earnings_label.setText(f"Total Earnings: ${total:.2f}")
+
+        # Store the earning data in the earnings list
+        self.data["earnings"].append({"date": date, "amount": float(amount)})
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    mainWin = BarbershopApp()
-    mainWin.show()
+    window = BarbershopApp()
+    window.show()
     sys.exit(app.exec_())
