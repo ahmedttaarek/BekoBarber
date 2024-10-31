@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QTabWidget, QWidget, QVBoxLayout, QLabel, QPushButton, QLineEdit, QFormLayout, QMessageBox
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTabWidget, QWidget, QVBoxLayout, QLabel, QPushButton, QLineEdit, QFormLayout, QMessageBox, QTableWidget, QTableWidgetItem, QHBoxLayout
 
 class BarbershopApp(QMainWindow):
     def __init__(self):
@@ -72,9 +72,84 @@ class PackagesTab(QWidget):
 class InventoryTab(QWidget):
     def __init__(self):
         super().__init__()
-        layout = QVBoxLayout()
-        layout.addWidget(QLabel("Inventory tab coming soon"))
-        self.setLayout(layout)
+        
+        # Layout for the tab
+        self.layout = QVBoxLayout()
+
+        # Inventory table setup
+        self.inventory_table = QTableWidget()
+        self.inventory_table.setColumnCount(2)
+        self.inventory_table.setHorizontalHeaderLabels(["Component", "Quantity"])
+        self.layout.addWidget(self.inventory_table)
+
+        # Input fields for adding and updating items
+        self.component_input = QLineEdit()
+        self.quantity_input = QLineEdit()
+        self.component_input.setPlaceholderText("Enter component name")
+        self.quantity_input.setPlaceholderText("Enter quantity")
+
+        # Buttons
+        self.add_button = QPushButton("Add Component")
+        self.remove_button = QPushButton("Remove Component")
+        self.update_button = QPushButton("Update Quantity")
+
+        # Connect buttons to their functions
+        self.add_button.clicked.connect(self.add_component)
+        self.remove_button.clicked.connect(self.remove_component)
+        self.update_button.clicked.connect(self.update_quantity)
+
+        # Arrange input fields and buttons in a horizontal layout
+        input_layout = QHBoxLayout()
+        input_layout.addWidget(self.component_input)
+        input_layout.addWidget(self.quantity_input)
+        input_layout.addWidget(self.add_button)
+        input_layout.addWidget(self.remove_button)
+        input_layout.addWidget(self.update_button)
+
+        # Add widgets and layouts to the main layout
+        self.layout.addLayout(input_layout)
+        self.setLayout(self.layout)
+
+    def add_component(self):
+        # Retrieve data from input fields
+        component_name = self.component_input.text()
+        quantity = self.quantity_input.text()
+        
+        # Validation
+        if not component_name or not quantity.isdigit():
+            QMessageBox.warning(self, "Input Error", "Please enter a valid component name and quantity.")
+            return
+        
+        # Add to table
+        row_position = self.inventory_table.rowCount()
+        self.inventory_table.insertRow(row_position)
+        self.inventory_table.setItem(row_position, 0, QTableWidgetItem(component_name))
+        self.inventory_table.setItem(row_position, 1, QTableWidgetItem(quantity))
+        
+        # Clear input fields
+        self.component_input.clear()
+        self.quantity_input.clear()
+
+    def remove_component(self):
+        # Get selected row to remove
+        current_row = self.inventory_table.currentRow()
+        if current_row != -1:
+            self.inventory_table.removeRow(current_row)
+        else:
+            QMessageBox.warning(self, "Selection Error", "Please select a component to remove.")
+
+    def update_quantity(self):
+        # Get selected row to update
+        current_row = self.inventory_table.currentRow()
+        if current_row != -1:
+            new_quantity = self.quantity_input.text()
+            if new_quantity.isdigit():
+                self.inventory_table.setItem(current_row, 1, QTableWidgetItem(new_quantity))
+                self.quantity_input.clear()
+            else:
+                QMessageBox.warning(self, "Input Error", "Please enter a valid quantity.")
+        else:
+            QMessageBox.warning(self, "Selection Error", "Please select a component to update.")
 
 class EarningsTab(QWidget):
     def __init__(self):
