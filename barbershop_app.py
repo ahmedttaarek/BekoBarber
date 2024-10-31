@@ -198,9 +198,96 @@ class InventoryTab(QWidget):
 class EarningsTab(QWidget):
     def __init__(self):
         super().__init__()
-        layout = QVBoxLayout()
-        layout.addWidget(QLabel("Earnings tab coming soon"))
-        self.setLayout(layout)
+        
+        # Main layout for the earnings tab
+        self.layout = QVBoxLayout()
+
+        # Table to display earnings with columns for Date, Service/Description, and Amount
+        self.earnings_table = QTableWidget()
+        self.earnings_table.setColumnCount(3)
+        self.earnings_table.setHorizontalHeaderLabels(["Date", "Service/Description", "Amount"])
+        self.layout.addWidget(self.earnings_table)
+
+        # Inputs for adding new earnings entry
+        self.date_input = QLineEdit()
+        self.date_input.setPlaceholderText("Enter date (e.g., 2024-10-31)")
+        self.description_input = QLineEdit()
+        self.description_input.setPlaceholderText("Enter service/description")
+        self.amount_input = QLineEdit()
+        self.amount_input.setPlaceholderText("Enter amount")
+
+        # Buttons for adding and clearing earnings
+        self.add_earning_button = QPushButton("Add Earning")
+        self.clear_earnings_button = QPushButton("Clear All Earnings")
+
+        # Display for total earnings
+        self.total_earnings_label = QLabel("Total Earnings: $0")
+
+        # Connect buttons to methods
+        self.add_earning_button.clicked.connect(self.add_earning)
+        self.clear_earnings_button.clicked.connect(self.clear_earnings)
+
+        # Layout for input fields and buttons
+        input_layout = QHBoxLayout()
+        input_layout.addWidget(self.date_input)
+        input_layout.addWidget(self.description_input)
+        input_layout.addWidget(self.amount_input)
+        input_layout.addWidget(self.add_earning_button)
+        input_layout.addWidget(self.clear_earnings_button)
+
+        # Add all elements to the main layout
+        self.layout.addLayout(input_layout)
+        self.layout.addWidget(self.total_earnings_label)
+        self.setLayout(self.layout)
+
+        # List to store earnings data
+        self.earnings_data = []
+
+    def add_earning(self):
+        # Retrieve input values
+        date = self.date_input.text()
+        description = self.description_input.text()
+        amount = self.amount_input.text()
+
+        # Validation for non-empty fields and numeric amount
+        if not date or not description or not amount.isdigit():
+            QMessageBox.warning(self, "Input Error", "Please enter valid date, description, and numeric amount.")
+            return
+
+        # Add data to table
+        row_position = self.earnings_table.rowCount()
+        self.earnings_table.insertRow(row_position)
+        self.earnings_table.setItem(row_position, 0, QTableWidgetItem(date))
+        self.earnings_table.setItem(row_position, 1, QTableWidgetItem(description))
+        self.earnings_table.setItem(row_position, 2, QTableWidgetItem(f"${amount}"))
+
+        # Append earnings data to list for total calculation
+        self.earnings_data.append(int(amount))
+
+        # Update total earnings
+        self.update_total_earnings()
+
+        # Clear input fields after adding
+        self.date_input.clear()
+        self.description_input.clear()
+        self.amount_input.clear()
+
+    def update_total_earnings(self):
+        # Calculate total earnings and update label
+        total = sum(self.earnings_data)
+        self.total_earnings_label.setText(f"Total Earnings: ${total}")
+
+    def clear_earnings(self):
+        # Confirm before clearing
+        reply = QMessageBox.question(self, "Clear Earnings", "Are you sure you want to clear all earnings?", 
+                                     QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        
+        if reply == QMessageBox.Yes:
+            # Clear earnings table and data
+            self.earnings_table.setRowCount(0)
+            self.earnings_data.clear()
+            self.update_total_earnings()
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
