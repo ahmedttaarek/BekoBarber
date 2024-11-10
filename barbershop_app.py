@@ -38,9 +38,11 @@ def load_data():
                 data["inventory"] = []
             if "earnings" not in data:
                 data["earnings"] = []
+            if "customers" not in data:
+                data["customers"] = []  
             return data
     except (FileNotFoundError, json.JSONDecodeError):
-        return {"packages": [], "inventory": [], "earnings": []}
+        return {"packages": [], "inventory": [], "earnings": [], "customers": []}
 
 def save_data(data):
     with open(DATA_FILE, 'w') as file:
@@ -87,10 +89,12 @@ class BarbershopApp(QMainWindow):
         self.earnings_tab = EarningsTab(self.data)
         self.packages_tab = PackagesTab(self.data, self.earnings_tab)
         self.inventory_tab = InventoryTab(self.data)
+        self.customer_tab = CustomersTab(self.data)
 
         self.tab_widget.addTab(self.packages_tab, "الباقات")
         self.tab_widget.addTab(self.inventory_tab, "المخزون")
         self.tab_widget.addTab(self.earnings_tab, "الأرباح")
+        self.tab_widget.addTab(self.customer_tab, "العملاء")
         
     def resource_path(self, relative_path):
         """ Get absolute path to resource, works for dev and for PyInstaller """
@@ -308,43 +312,47 @@ class PackagesTab(QWidget):
         # Create a printer object for previewing
         printer = QPrinter(QPrinter.HighResolution)
         
-        # Set the paper size for a small receipt (58 mm width)
-        custom_size = QSizeF(58, 200)  # 58 mm width, 200 mm height (or as needed)
+        # Set the paper size to 80 mm width and a custom height for roll printing
+        custom_size = QSizeF(80, 300)  # 80 mm width, 300 mm height (or as needed)
         printer.setPaperSize(custom_size, QPrinter.Millimeter)  # Set the custom size in millimeters
 
         # Set up the print preview dialog
         preview_dialog = QPrintPreviewDialog(printer, self)
         preview_dialog.paintRequested.connect(lambda p: self.render_receipt(p, message))
         preview_dialog.exec_()
+        
 
     def render_receipt(self, printer, message):
         painter = QPainter(printer)
 
-        # Load and draw the logo centered at the top
-        logo = QIcon("beko.ico").pixmap(50, 50)  # Adjust icon size as needed
+        # Draw the logo at a higher position with a larger size
+        logo = QIcon("beko.ico").pixmap(100, 100)  # Increased size for visibility on 80mm paper
         logo_x = (printer.pageRect().width() - logo.width()) // 2
-        painter.drawPixmap(logo_x, 10, logo)  # Draw the logo near the top
+        painter.drawPixmap(logo_x, 10, logo)  # Positioned near the top
 
-        # Set up font for text (adjusted for visibility)
-        font = QFont("Arial", 12)  # Adjust font size as needed
+        # Draw the title below the logo with more space
+        font = QFont("Arial", 18, QFont.Bold)
         painter.setFont(font)
-
-        # Draw the title "Beko Barber" below the logo, centered
         title = "Beko Barber"
         title_x = (printer.pageRect().width() - painter.fontMetrics().width(title)) // 2
-        painter.drawText(title_x, 70, title)  # Adjust Y position after the logo
+        painter.drawText(title_x, 130, title)  # Adjusted y-position to avoid overlapping
 
-        # Starting Y position for receipt content
-        y = 100  # Adjusted Y position after the logo and title
+        # Set a smaller font size for the Arabic content
+        content_font = QFont("Arial", 10)
+        painter.setFont(content_font)
 
-        # Draw each line of the message with increased spacing for readability
+        # Start drawing Arabic text with adjusted line height and padding to prevent cutting
+        y = 170  # Start position for the Arabic content after title
+
+        # Loop to draw each line with sufficient padding
         for line in message.split('\n'):
-            # Define a QRect for each line with right alignment
-            rect = QRect(10, y, printer.pageRect().width() - 20, 30)  # Bounding rectangle with margins
-            painter.drawText(rect, Qt.AlignRight | Qt.AlignVCenter, line)  # Align text to the right for Arabic
-            y += 40  # Adjust spacing between lines
+            rect = QRect(10, y, printer.pageRect().width() - 20, 30)  # 30px height per line for better fit
+            painter.drawText(rect, Qt.AlignRight | Qt.AlignVCenter, line)
+            y += 35  # Add extra padding between lines
 
         painter.end()
+
+
 
     def print_receipt(self, message):
         # Create a printer object for actual printing
@@ -385,15 +393,16 @@ class InventoryTab(QWidget):
 
         # Inventory table with enhanced style and layout
         self.inventory_table = QTableWidget()
-        self.inventory_table.setColumnCount(3)
-        self.inventory_table.setHorizontalHeaderLabels(["المكون", "الكمية", "الإجراءات"])
+        self.inventory_table.setColumnCount(4)  # Updated to 4 columns
+        self.inventory_table.setHorizontalHeaderLabels(["المكون", "الكمية", "السعر", "الإجراءات"])
         self.inventory_table.setMinimumSize(800, 400)
         self.inventory_table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
         # Set equal column widths
-        self.inventory_table.setColumnWidth(0, 266)  # Approximately 800 / 3
-        self.inventory_table.setColumnWidth(1, 266)  # Approximately 800 / 3
-        self.inventory_table.setColumnWidth(2, 266)  # Approximately 800 / 3
+        self.inventory_table.setColumnWidth(0, 200)
+        self.inventory_table.setColumnWidth(1, 200)
+        self.inventory_table.setColumnWidth(2, 200)  # New column for السعر
+        self.inventory_table.setColumnWidth(3, 200)
 
         # Style the header
         header = self.inventory_table.horizontalHeader()
@@ -452,8 +461,10 @@ class InventoryTab(QWidget):
         self.layout.addWidget(self.inventory_table)
         self.load_inventory_to_table()
 
+        # Input fields for adding components
         self.component_input = QLineEdit()
         self.quantity_input = QLineEdit()
+        self.price_input = QLineEdit()  # New input for price
 
         # Customize button styles in InventoryTab
         self.add_component_button = QPushButton("أضف مكون")
@@ -466,10 +477,13 @@ class InventoryTab(QWidget):
         self.remove_component_button.setStyleSheet("background-color: #f44336; color: white; border: none; border-radius: 5px;")
         self.remove_component_button.clicked.connect(self.remove_component)
 
+        # Adding the input fields and labels to the layout
         self.layout.addWidget(QLabel("اسم المكون:"))
         self.layout.addWidget(self.component_input)
         self.layout.addWidget(QLabel("الكمية:"))
         self.layout.addWidget(self.quantity_input)
+        self.layout.addWidget(QLabel("السعر:"))  # New label for price
+        self.layout.addWidget(self.price_input)  # New input field for price
 
         button_layout = QHBoxLayout()
         button_layout.addStretch()
@@ -488,9 +502,9 @@ class InventoryTab(QWidget):
 
     def load_inventory_to_table(self):
         for item in self.data.get("inventory", []):
-            self.add_table_row(item["component"], item["quantity"])
+            self.add_table_row(item["component"], item["quantity"], item.get("price", "0"))
 
-    def add_table_row(self, component, quantity):
+    def add_table_row(self, component, quantity, price="0"):
         row_position = self.inventory_table.rowCount()
         self.inventory_table.insertRow(row_position)
 
@@ -501,6 +515,10 @@ class InventoryTab(QWidget):
         quantity_item = QTableWidgetItem(str(quantity))
         quantity_item.setTextAlignment(Qt.AlignCenter | Qt.AlignVCenter)  # Center align the text
         self.inventory_table.setItem(row_position, 1, quantity_item)
+
+        price_item = QTableWidgetItem(str(price))  # New price item
+        price_item.setTextAlignment(Qt.AlignCenter | Qt.AlignVCenter)  # Center align the text
+        self.inventory_table.setItem(row_position, 2, price_item)
 
         # Create the widget to hold the action buttons
         button_widget = QWidget()
@@ -525,21 +543,23 @@ class InventoryTab(QWidget):
 
         # Center align the buttons in the widget
         button_layout.setAlignment(Qt.AlignCenter)
-        self.inventory_table.setCellWidget(row_position, 2, button_widget)
+        self.inventory_table.setCellWidget(row_position, 3, button_widget)  # Updated index for actions column
 
     def add_component(self):
         component_name = self.component_input.text()
         quantity = self.quantity_input.text()
+        price = self.price_input.text()  # Retrieve the price input
         
-        if not component_name or not quantity.isdigit():
-            QMessageBox.warning(self, "خطأ في الإدخال", "يرجى إدخال اسم مكون صحيح وكمية.")
+        if not component_name or not quantity.isdigit() or not price.isdigit():
+            QMessageBox.warning(self, "خطأ في الإدخال", "يرجى إدخال اسم مكون صحيح وكمية وسعر.")
             return
-        
-        self.add_table_row(component_name, quantity)
-        self.data["inventory"].append({"component": component_name, "quantity": int(quantity)})
+
+        self.add_table_row(component_name, quantity, price)
+        self.data["inventory"].append({"component": component_name, "quantity": int(quantity), "price": int(price)})
         
         self.component_input.clear()
         self.quantity_input.clear()
+        self.price_input.clear()  # Clear the price input after adding
 
     def remove_component(self):
         current_row = self.inventory_table.currentRow()
@@ -709,7 +729,203 @@ class EarningsTab(QWidget):
             self.earnings_table.setRowCount(0)
             self.update_total_earnings(0)
             QMessageBox.information(self, "تمت الإزالة", "تمت إزالة جميع الأرباح.")
+            
+            
+            
+class CustomersTab(QWidget):
+    def __init__(self, data):
+        super().__init__()
+        self.data = data
 
+        # Set layout direction to right-to-left
+        self.setLayoutDirection(Qt.RightToLeft)
+
+        self.layout = QVBoxLayout()
+
+        # Customers table with enhanced style and layout
+        self.customers_table = QTableWidget()
+        self.customers_table.setColumnCount(4)
+        self.customers_table.setHorizontalHeaderLabels(["الاسم", "رقم الموبايل", "عدد الزيارات", "الإجراءات"])
+        self.customers_table.setMinimumSize(800, 400)
+        self.customers_table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+
+        # Set equal column widths
+        for i in range(4):
+            self.customers_table.setColumnWidth(i, 200)  # Adjust width as needed
+
+        # Style the header
+        header = self.customers_table.horizontalHeader()
+        header.setStyleSheet("QHeaderView::section { background-color: #333; color: white; font-weight: bold; padding: 12px; }")
+        header.setStretchLastSection(True)
+
+        # Row height and alternating colors with hover effect
+        self.customers_table.verticalHeader().setDefaultSectionSize(50)  # Set row height
+        self.customers_table.setAlternatingRowColors(True)
+        self.customers_table.setStyleSheet("""
+            QTableWidget {
+                font-size: 18px;
+                border: 1px solid #ddd;
+                gridline-color: #ddd;
+                font-weight: bold;
+            }
+            QHeaderView::section {
+                font-size: 18px;
+                background-color: #333;
+                color: white;
+                font-weight: bold;
+                padding: 15px;
+            }
+            QTableWidget::item {
+                padding: 10px;
+                min-width: 100px;
+                min-height: 50px;
+                font-weight: bold;
+                text-align: center;
+            }
+            QTableWidget::item:alternate {
+                background-color: #f9f9f9;
+            }
+            QTableWidget::item:selected {
+                background-color: #d9edf7;
+            }
+            QTableWidget::item:hover {
+                background-color: #f5f5f5;
+            }
+        """)
+
+        self.layout.addWidget(self.customers_table)
+        self.load_customers_to_table()
+
+        # Search bar
+        self.search_input = QLineEdit()
+        self.search_input.setPlaceholderText("ابحث عن عميل بالاسم")
+        self.search_input.textChanged.connect(self.search_customer)
+        self.layout.addWidget(self.search_input)
+
+        self.name_input = QLineEdit()
+        self.mobile_input = QLineEdit()
+
+        # Add and remove buttons for customers
+        self.add_customer_button = QPushButton("أضف عميل")
+        self.add_customer_button.setFixedSize(QSize(220, 50))
+        self.add_customer_button.setStyleSheet("background-color: #4CAF50; color: white; border: none; border-radius: 5px; font-weight: bold; font-size: 16px;")
+        self.add_customer_button.clicked.connect(self.add_customer)
+
+        self.remove_customer_button = QPushButton("احذف عميل")
+        self.remove_customer_button.setFixedSize(QSize(220, 50))
+        self.remove_customer_button.setStyleSheet("background-color: #f44336; color: white; border: none; border-radius: 5px; font-weight: bold; font-size: 16px;")
+        self.remove_customer_button.clicked.connect(self.remove_customer)
+
+        self.save_changes_button = QPushButton("حفظ التغييرات")
+        self.save_changes_button.setFixedSize(QSize(220, 50))
+        self.save_changes_button.setStyleSheet("background-color: #2196F3; color: white; border: none; border-radius: 5px; font-weight: bold; font-size: 16px;")
+        self.save_changes_button.clicked.connect(self.save_changes)
+
+        self.layout.addWidget(QLabel("الاسم:"))
+        self.layout.addWidget(self.name_input)
+        self.layout.addWidget(QLabel("رقم الموبايل:"))
+        self.layout.addWidget(self.mobile_input)
+
+        # Adjust button layout to position the save button in the bottom-right corner
+        button_layout = QHBoxLayout()
+        button_layout.addWidget(self.add_customer_button)
+        button_layout.addWidget(self.remove_customer_button)
+        button_layout.addStretch()  # Adds space to push "حفظ التغييرات" button to the right
+        button_layout.addWidget(self.save_changes_button)
+        
+        self.layout.addLayout(button_layout)
+
+        self.setLayout(self.layout)
+
+    def search_customer(self):
+        search_text = self.search_input.text().lower()
+        for row in range(self.customers_table.rowCount()):
+            item = self.customers_table.item(row, 0)  # Assuming name is in the first column
+            self.customers_table.setRowHidden(row, search_text not in item.text().lower())
+
+    def load_customers_to_table(self):
+        for customer in self.data.get("customers", []):
+            name = customer["name"]
+            mobile = customer["mobile"]
+            visits = customer.get("visits", 0)  # Default to 0 if not in data
+            self.add_table_row(name, mobile, visits)
+
+    def add_table_row(self, name, mobile, visits=0):
+        row_position = self.customers_table.rowCount()
+        self.customers_table.insertRow(row_position)
+
+        name_item = QTableWidgetItem(name)
+        name_item.setTextAlignment(Qt.AlignCenter | Qt.AlignVCenter)
+        self.customers_table.setItem(row_position, 0, name_item)
+
+        mobile_item = QTableWidgetItem(mobile)
+        mobile_item.setTextAlignment(Qt.AlignCenter | Qt.AlignVCenter)
+        self.customers_table.setItem(row_position, 1, mobile_item)
+
+        visits_item = QTableWidgetItem(str(visits))
+        visits_item.setTextAlignment(Qt.AlignCenter | Qt.AlignVCenter)
+        self.customers_table.setItem(row_position, 2, visits_item)
+
+        # Create action buttons
+        button_widget = QWidget()
+        button_layout = QHBoxLayout(button_widget)
+        button_layout.setContentsMargins(0, 0, 0, 0)
+        button_layout.setSpacing(5)
+
+        plus_button = QPushButton("+")
+        plus_button.setFixedSize(40, 40)
+        plus_button.setStyleSheet("background-color: #4CAF50; color: white; border-radius: 5px; font-weight: bold;")
+        plus_button.clicked.connect(lambda _, row=row_position: self.increment_visits(row))
+
+        minus_button = QPushButton("-")
+        minus_button.setFixedSize(40, 40)
+        minus_button.setStyleSheet("background-color: #f44336; color: white; border-radius: 5px; font-weight: bold;")
+
+        button_layout.addWidget(plus_button)
+        button_layout.addWidget(minus_button)
+        button_layout.setAlignment(Qt.AlignCenter)
+        self.customers_table.setCellWidget(row_position, 3, button_widget)
+
+    def increment_visits(self, row):
+        visits_item = self.customers_table.item(row, 2)
+        current_visits = int(visits_item.text())
+        visits_item.setText(str(current_visits + 1))
+
+    def add_customer(self):
+        name = self.name_input.text()
+        mobile = self.mobile_input.text()
+
+        if not name or not mobile:
+            QMessageBox.warning(self, "خطأ في الإدخال", "يرجى إدخال اسم ورقم موبايل صحيح.")
+            return
+
+        self.add_table_row(name, mobile)
+        self.data["customers"].append({"name": name, "mobile": mobile, "visits": 0})
+
+        self.name_input.clear()
+        self.mobile_input.clear()
+
+    def remove_customer(self):
+        current_row = self.customers_table.currentRow()
+        if current_row != -1:
+            name = self.customers_table.item(current_row, 0).text()
+            self.data["customers"] = [customer for customer in self.data["customers"] if customer["name"] != name]
+            self.customers_table.removeRow(current_row)
+            QMessageBox.information(self, "تم حذف العميل", f"تم حذف العميل: {name}")
+        else:
+            QMessageBox.warning(self, "خطأ في الاختيار", "يرجى اختيار عميل للحذف.")
+
+    def save_changes(self):
+        # Update visits in the data dictionary
+        for row in range(self.customers_table.rowCount()):
+            name = self.customers_table.item(row, 0).text()
+            visits = int(self.customers_table.item(row, 2).text())
+            for customer in self.data["customers"]:
+                if customer["name"] == name:
+                    customer["visits"] = visits
+                    break
+        save_data(self.data)
+        QMessageBox.information(self, "تم حفظ التغييرات", "تم حفظ التغييرات بنجاح.")
 
 
 
