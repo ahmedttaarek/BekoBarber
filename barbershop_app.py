@@ -16,7 +16,8 @@ from PyQt5.QtWidgets import (
     QFormLayout,
     QLineEdit,
     QHeaderView,
-    QSizePolicy
+    QSizePolicy,
+    QComboBox
 )
 from PyQt5.QtGui import QFont, QPainter, QPixmap, QIcon  
 from PyQt5.QtCore import Qt, QSize, QSizeF, QRect
@@ -39,10 +40,12 @@ def load_data():
             if "earnings" not in data:
                 data["earnings"] = []
             if "customers" not in data:
-                data["customers"] = []  
+                data["customers"] = []
+            if "monthly_earnings" not in data:  
+                data["monthly_earnings"] = []  
             return data
     except (FileNotFoundError, json.JSONDecodeError):
-        return {"packages": [], "inventory": [], "earnings": [], "customers": []}
+        return {"packages": [], "inventory": [], "earnings": [], "customers": [], "monthly_earnings": []}
 
 def save_data(data):
     with open(DATA_FILE, 'w') as file:
@@ -90,11 +93,13 @@ class BarbershopApp(QMainWindow):
         self.packages_tab = PackagesTab(self.data, self.earnings_tab)
         self.inventory_tab = InventoryTab(self.data)
         self.customer_tab = CustomersTab(self.data)
+        self.monthly_earnings_tab = MonthlyEarningsTab(self.data)
 
         self.tab_widget.addTab(self.packages_tab, "الباقات")
         self.tab_widget.addTab(self.inventory_tab, "المخزون")
         self.tab_widget.addTab(self.earnings_tab, "الأرباح")
         self.tab_widget.addTab(self.customer_tab, "العملاء")
+        self.tab_widget.addTab(self.monthly_earnings_tab, "الأرباح الشهرية")
         
     def resource_path(self, relative_path):
         """ Get absolute path to resource, works for dev and for PyInstaller """
@@ -394,7 +399,7 @@ class InventoryTab(QWidget):
         # Inventory table with enhanced style and layout
         self.inventory_table = QTableWidget()
         self.inventory_table.setColumnCount(4)  # Updated to 4 columns
-        self.inventory_table.setHorizontalHeaderLabels(["المكون", "الكمية", "السعر", "الإجراءات"])
+        self.inventory_table.setHorizontalHeaderLabels(["المكون", "الكمية", "السعر", "الاجرائات"])
         self.inventory_table.setMinimumSize(800, 400)
         self.inventory_table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
@@ -605,6 +610,12 @@ class EarningsTab(QWidget):
 
         self.layout = QVBoxLayout()
 
+        # Add date and time label at the top of the page
+        self.date_label = QLabel()
+        self.update_date_label()
+        self.date_label.setStyleSheet("font-size: 16px; font-weight: bold; color: #333;")
+        self.layout.addWidget(self.date_label)
+
         # Total earnings label with enhanced style
         self.total_earnings_label = QLabel("إجمالي الأرباح: $0.00")
         self.total_earnings_label.setStyleSheet("font-size: 18px; font-weight: bold; color: #333;")
@@ -663,6 +674,10 @@ class EarningsTab(QWidget):
 
         self.setLayout(self.layout)
 
+    def update_date_label(self):
+        current_date_time = datetime.now().strftime("%Y-%m-%d %I:%M %p")  # 12-hour format with AM/PM
+        self.date_label.setText(f"التاريخ: {current_date_time}")
+
     def load_earnings_to_table(self):
         total_earnings = 0
         self.earnings_table.setRowCount(0)  # Clear the table before loading
@@ -682,28 +697,6 @@ class EarningsTab(QWidget):
 
             total_earnings += earning["amount"]
 
-        self.update_total_earnings(total_earnings)
-
-    def add_earning(self, amount):
-        date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        earning_data = {"date": date, "amount": float(amount)}
-        self.data["earnings"].append(earning_data)
-
-        row_position = self.earnings_table.rowCount()
-        self.earnings_table.insertRow(row_position)
-
-        date_item = QTableWidgetItem(date)
-        date_item.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)  # Center-align text
-        date_item.setFont(QFont("Arial", 12, QFont.Bold))  # Set font to bold and size 12
-        self.earnings_table.setItem(row_position, 0, date_item)
-
-        amount_item = QTableWidgetItem(f"${float(amount):.2f}")
-        amount_item.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)  # Center-align text
-        amount_item.setFont(QFont("Arial", 12, QFont.Bold))  # Set font to bold and size 12
-        self.earnings_table.setItem(row_position, 1, amount_item)
-
-        # Update total earnings
-        total_earnings = sum(earning["amount"] for earning in self.data.get("earnings", []))
         self.update_total_earnings(total_earnings)
 
     def update_total_earnings(self, total):
@@ -745,7 +738,7 @@ class CustomersTab(QWidget):
         # Customers table with enhanced style and layout
         self.customers_table = QTableWidget()
         self.customers_table.setColumnCount(4)
-        self.customers_table.setHorizontalHeaderLabels(["الاسم", "رقم الموبايل", "عدد الزيارات", "الإجراءات"])
+        self.customers_table.setHorizontalHeaderLabels(["الاسم", "رقم الموبايل", "عدد الزيارات", "الاجرائات"])
         self.customers_table.setMinimumSize(800, 400)
         self.customers_table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
@@ -798,9 +791,10 @@ class CustomersTab(QWidget):
 
         # Search bar
         self.search_input = QLineEdit()
-        self.search_input.setPlaceholderText("ابحث عن عميل بالاسم")
+        self.search_input.setPlaceholderText("ابحث عن عميل")
+        self.search_input.setStyleSheet("font-size: 20px; padding: 8px;")  # Make the text more readable
         self.search_input.textChanged.connect(self.search_customer)
-        self.layout.addWidget(self.search_input)
+        self.layout.addWidget(self.search_input, alignment=Qt.AlignTop | Qt.AlignCenter)
 
         self.name_input = QLineEdit()
         self.mobile_input = QLineEdit()
@@ -816,7 +810,7 @@ class CustomersTab(QWidget):
         self.remove_customer_button.setStyleSheet("background-color: #f44336; color: white; border: none; border-radius: 5px; font-weight: bold; font-size: 16px;")
         self.remove_customer_button.clicked.connect(self.remove_customer)
 
-        self.save_changes_button = QPushButton("حفظ التغييرات")
+        self.save_changes_button = QPushButton("احفظ التغييرات")
         self.save_changes_button.setFixedSize(QSize(220, 50))
         self.save_changes_button.setStyleSheet("background-color: #2196F3; color: white; border: none; border-radius: 5px; font-weight: bold; font-size: 16px;")
         self.save_changes_button.clicked.connect(self.save_changes)
@@ -826,15 +820,20 @@ class CustomersTab(QWidget):
         self.layout.addWidget(QLabel("رقم الموبايل:"))
         self.layout.addWidget(self.mobile_input)
 
-        # Adjust button layout to position the save button in the bottom-right corner
-        button_layout = QHBoxLayout()
-        button_layout.addWidget(self.add_customer_button)
-        button_layout.addWidget(self.remove_customer_button)
-        button_layout.addStretch()  # Adds space to push "حفظ التغييرات" button to the right
-        button_layout.addWidget(self.save_changes_button)
-        
-        self.layout.addLayout(button_layout)
+        # Adjust button layout to position the save button in the bottom-left corner
+        button_layout = QVBoxLayout()
 
+        # Centering the "أضف عميل" and "احذف عميل" buttons side by side
+        center_buttons_layout = QHBoxLayout()
+        center_buttons_layout.addWidget(self.add_customer_button)
+        center_buttons_layout.addWidget(self.remove_customer_button)
+        center_buttons_layout.setAlignment(Qt.AlignCenter)
+
+        # Add the save button to the bottom left
+        button_layout.addLayout(center_buttons_layout)
+        button_layout.addWidget(self.save_changes_button, alignment=Qt.AlignLeft)
+
+        self.layout.addLayout(button_layout)
         self.setLayout(self.layout)
 
     def search_customer(self):
@@ -880,6 +879,7 @@ class CustomersTab(QWidget):
         minus_button = QPushButton("-")
         minus_button.setFixedSize(40, 40)
         minus_button.setStyleSheet("background-color: #f44336; color: white; border-radius: 5px; font-weight: bold;")
+        minus_button.clicked.connect(lambda _, row=row_position: self.decrement_visits(row))
 
         button_layout.addWidget(plus_button)
         button_layout.addWidget(minus_button)
@@ -890,6 +890,11 @@ class CustomersTab(QWidget):
         visits_item = self.customers_table.item(row, 2)
         current_visits = int(visits_item.text())
         visits_item.setText(str(current_visits + 1))
+
+    def decrement_visits(self, row):
+        visits_item = self.customers_table.item(row, 2)
+        current_visits = int(visits_item.text())
+        visits_item.setText(str(max(current_visits - 1, 0)))  # Prevent negative values
 
     def add_customer(self):
         name = self.name_input.text()
@@ -923,9 +928,155 @@ class CustomersTab(QWidget):
             for customer in self.data["customers"]:
                 if customer["name"] == name:
                     customer["visits"] = visits
-                    break
-        save_data(self.data)
-        QMessageBox.information(self, "تم حفظ التغييرات", "تم حفظ التغييرات بنجاح.")
+
+        QMessageBox.information(self, "حفظ التغييرات", "تم حفظ التغييرات بنجاح.")
+        
+        
+class MonthlyEarningsTab(QWidget):
+    def __init__(self, data):
+        super().__init__()
+        self.data = data
+
+        # Ensure 'monthly_earnings' key exists in data
+        if "monthly_earnings" not in self.data:
+            self.data["monthly_earnings"] = []
+
+        # Set layout direction to right-to-left for Arabic language support
+        self.setLayoutDirection(Qt.RightToLeft)
+
+        self.layout = QVBoxLayout()
+
+        # Table for displaying monthly earnings (remove the "إجراء" column)
+        self.earnings_table = QTableWidget()
+        self.earnings_table.setColumnCount(2)  # Remove the "إجراء" column
+        self.earnings_table.setHorizontalHeaderLabels(["الشهر", "الربح"])
+        self.earnings_table.setMinimumSize(800, 400)
+        self.earnings_table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+
+        # Set equal column widths
+        self.earnings_table.setColumnWidth(0, 400)
+        self.earnings_table.setColumnWidth(1, 400)
+
+        # Style header
+        header = self.earnings_table.horizontalHeader()
+        header.setStyleSheet("QHeaderView::section { background-color: #333; color: white; font-weight: bold; padding: 12px; }")
+        header.setStretchLastSection(True)
+
+        # Row height and alternating colors with hover effect
+        self.earnings_table.verticalHeader().setDefaultSectionSize(40)
+        self.earnings_table.setAlternatingRowColors(True)
+        self.earnings_table.setStyleSheet("""
+            QTableWidget { border: 1px solid #ddd; gridline-color: #ddd; font-size: 14px; }
+            QTableWidget::item { padding: 8px; text-align: center; }
+            QTableWidget::item:alternate { background-color: #f9f9f9; }
+            QTableWidget::item:selected { background-color: #d9edf7; }
+            QTableWidget::item:hover { background-color: #f5f5f5; }
+        """)
+
+        self.layout.addWidget(self.earnings_table)
+
+        # Load existing earnings data into the table
+        self.load_earnings_table()
+
+        # Text fields and buttons moved to bottom
+        self.monthly_earnings_label = QLabel("أرباح الشهر:")
+        self.monthly_earnings_label.setStyleSheet("font-size: 16px; font-weight: bold; color: #333;")
+
+        self.earnings_input = QLineEdit()
+        self.earnings_input.setPlaceholderText("أدخل أرباح الشهر")
+        self.earnings_input.setStyleSheet("padding: 8px; font-size: 14px;")
+
+        self.month_dropdown = QComboBox()
+        months_arabic = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"]
+        self.month_dropdown.addItems(months_arabic)
+        self.month_dropdown.setStyleSheet("padding: 8px; font-size: 18px;")
+
+        self.add_earnings_button = QPushButton("إضافة الربح")
+        self.add_earnings_button.setStyleSheet("background-color: #4CAF50; color: white; padding: 12px 24px; font-weight: bold; border-radius: 5px; text-align: center;")
+        self.add_earnings_button.clicked.connect(self.add_monthly_earning)
+
+        self.remove_earnings_button = QPushButton("ازاله الربح")
+        self.remove_earnings_button.setStyleSheet("background-color: #FF5733; color: white; padding: 12px 24px; font-weight: bold; border-radius: 5px; text-align: center;")
+        self.remove_earnings_button.clicked.connect(self.remove_selected_earning)
+
+        # Layout for text fields and buttons (center the buttons)
+        bottom_layout = QVBoxLayout()
+        bottom_layout.addWidget(self.monthly_earnings_label)
+        bottom_layout.addWidget(self.earnings_input)
+        bottom_layout.addWidget(self.month_dropdown)
+
+        # Center buttons and set them with bold text
+        button_layout = QHBoxLayout()
+        button_layout.addStretch()  # Add space to left
+        button_layout.addWidget(self.add_earnings_button)
+        button_layout.addWidget(self.remove_earnings_button)
+        button_layout.addStretch()  # Add space to right
+
+        bottom_layout.addLayout(button_layout)
+
+        # Add bottom layout to main layout
+        self.layout.addLayout(bottom_layout)
+        self.setLayout(self.layout)
+
+    def add_monthly_earning(self):
+        """ Add monthly earnings to the data and table """
+        earnings_value = self.earnings_input.text().strip()
+        selected_month = self.month_dropdown.currentText()
+        if earnings_value:
+            try:
+                earnings_amount = float(earnings_value)
+                entry = {"month": selected_month, "amount": earnings_amount}
+                self.data["monthly_earnings"].append(entry)  # Add to data
+                self.earnings_input.clear()  # Clear the input field after adding
+                QMessageBox.information(self, "نجاح", f"تمت إضافة أرباح {earnings_amount} لشهر {selected_month} بنجاح.")
+                self.add_earning_to_table(selected_month, earnings_amount)  # Add entry to table
+            except ValueError:
+                QMessageBox.warning(self, "خطأ في المدخلات", "يرجى إدخال قيمة عددية صحيحة للأرباح.")
+        else:
+            QMessageBox.warning(self, "خطأ في المدخلات", "يرجى ملء حقل الأرباح قبل إضافة الربح.")
+
+    def load_earnings_table(self):
+        """ Load earnings data into the table """
+        for entry in self.data["monthly_earnings"]:
+            self.add_earning_to_table(entry["month"], entry["amount"])
+
+    def add_earning_to_table(self, month, amount):
+        """ Add an earning entry to the table """
+        row_position = self.earnings_table.rowCount()
+        self.earnings_table.insertRow(row_position)
+
+        month_item = QTableWidgetItem(month)
+        month_item.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        month_item.setFont(QFont("Arial", 12, QFont.Bold))
+        self.earnings_table.setItem(row_position, 0, month_item)
+
+        amount_item = QTableWidgetItem(str(amount))
+        amount_item.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        amount_item.setFont(QFont("Arial", 12, QFont.Bold))
+        self.earnings_table.setItem(row_position, 1, amount_item)
+
+    def remove_selected_earning(self):
+        """ Remove the selected earning from the table and data """
+        selected_row = self.earnings_table.currentRow()  # Get the selected row
+        if selected_row >= 0:
+            # Get the month and amount of the selected row
+            month = self.earnings_table.item(selected_row, 0).text() if self.earnings_table.item(selected_row, 0) else None
+            amount = self.earnings_table.item(selected_row, 1).text() if self.earnings_table.item(selected_row, 1) else None
+            
+            if month and amount:
+                # Remove from data
+                self.data["monthly_earnings"] = [
+                    entry for entry in self.data["monthly_earnings"] if entry["month"] != month or str(entry["amount"]) != amount
+                ]
+                # Remove from table
+                self.earnings_table.removeRow(selected_row)
+                QMessageBox.information(self, "تم الحذف", f"تمت إزالة أرباح {amount} لشهر {month} بنجاح.")
+            else:
+                QMessageBox.warning(self, "خطأ", "لم يتم العثور على العناصر للحذف.")
+        else:
+            QMessageBox.warning(self, "خطأ", "يرجى اختيار صف للحذف.")
+
+
 
 
 
