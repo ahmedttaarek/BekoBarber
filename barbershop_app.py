@@ -610,12 +610,6 @@ class EarningsTab(QWidget):
 
         self.layout = QVBoxLayout()
 
-        # Add date and time label at the top of the page
-        self.date_label = QLabel()
-        self.update_date_label()
-        self.date_label.setStyleSheet("font-size: 16px; font-weight: bold; color: #333;")
-        self.layout.addWidget(self.date_label)
-
         # Total earnings label with enhanced style
         self.total_earnings_label = QLabel("إجمالي الأرباح: $0.00")
         self.total_earnings_label.setStyleSheet("font-size: 18px; font-weight: bold; color: #333;")
@@ -674,10 +668,6 @@ class EarningsTab(QWidget):
 
         self.setLayout(self.layout)
 
-    def update_date_label(self):
-        current_date_time = datetime.now().strftime("%Y-%m-%d %I:%M %p")  # 12-hour format with AM/PM
-        self.date_label.setText(f"التاريخ: {current_date_time}")
-
     def load_earnings_to_table(self):
         total_earnings = 0
         self.earnings_table.setRowCount(0)  # Clear the table before loading
@@ -697,6 +687,28 @@ class EarningsTab(QWidget):
 
             total_earnings += earning["amount"]
 
+        self.update_total_earnings(total_earnings)
+
+    def add_earning(self, amount):
+        date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        earning_data = {"date": date, "amount": float(amount)}
+        self.data["earnings"].append(earning_data)
+
+        row_position = self.earnings_table.rowCount()
+        self.earnings_table.insertRow(row_position)
+
+        date_item = QTableWidgetItem(date)
+        date_item.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)  # Center-align text
+        date_item.setFont(QFont("Arial", 12, QFont.Bold))  # Set font to bold and size 12
+        self.earnings_table.setItem(row_position, 0, date_item)
+
+        amount_item = QTableWidgetItem(f"${float(amount):.2f}")
+        amount_item.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)  # Center-align text
+        amount_item.setFont(QFont("Arial", 12, QFont.Bold))  # Set font to bold and size 12
+        self.earnings_table.setItem(row_position, 1, amount_item)
+
+        # Update total earnings
+        total_earnings = sum(earning["amount"] for earning in self.data.get("earnings", []))
         self.update_total_earnings(total_earnings)
 
     def update_total_earnings(self, total):
