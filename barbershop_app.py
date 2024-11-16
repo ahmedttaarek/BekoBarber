@@ -43,14 +43,18 @@ def load_data():
                 data["customers"] = []
             if "monthly_earnings" not in data:  
                 data["monthly_earnings"] = []  
+            if "expenses" not in data:  # Add this line for expenses
+                data["expenses"] = []  # Initialize expenses if not present
             return data
     except (FileNotFoundError, json.JSONDecodeError):
-        return {"packages": [], "inventory": [], "earnings": [], "customers": [], "monthly_earnings": []}
+        return {
+            "packages": [], "inventory": [], "earnings": [], 
+            "customers": [], "monthly_earnings": [], "expenses": []  # Include expenses
+        }
 
 def save_data(data):
     with open(DATA_FILE, 'w') as file:
         json.dump(data, file, indent=4)
-
 
 class BarbershopApp(QMainWindow):
     def __init__(self):
@@ -89,17 +93,20 @@ class BarbershopApp(QMainWindow):
         self.tab_widget = QTabWidget()
         self.layout.addWidget(self.tab_widget) 
 
+        # Add tabs
         self.earnings_tab = EarningsTab(self.data)
         self.packages_tab = PackagesTab(self.data, self.earnings_tab)
         self.inventory_tab = InventoryTab(self.data)
         self.customer_tab = CustomersTab(self.data)
         self.monthly_earnings_tab = MonthlyEarningsTab(self.data)
+        self.expenses_tab = ExpensesTab(self.data)  # Add the ExpensesTab
 
         self.tab_widget.addTab(self.packages_tab, "الباقات")
         self.tab_widget.addTab(self.inventory_tab, "المخزون")
         self.tab_widget.addTab(self.earnings_tab, "الأرباح")
         self.tab_widget.addTab(self.customer_tab, "العملاء")
         self.tab_widget.addTab(self.monthly_earnings_tab, "الأرباح الشهرية")
+        self.tab_widget.addTab(self.expenses_tab, "المصروفات")  # Add the tab for المصروفات
         
     def resource_path(self, relative_path):
         """ Get absolute path to resource, works for dev and for PyInstaller """
@@ -1089,6 +1096,179 @@ class MonthlyEarningsTab(QWidget):
             QMessageBox.warning(self, "خطأ", "يرجى اختيار صف للحذف.")
 
 
+
+class ExpensesTab(QWidget):
+    def __init__(self, data):
+        super().__init__()
+        self.data = data
+        self.layout = QVBoxLayout()
+
+        # Set layout direction to right-to-left
+        self.setLayoutDirection(Qt.RightToLeft)
+
+        # Adjusted font for larger screens
+        large_font = QFont("Arial", 16)
+
+        form_layout = QFormLayout()
+        self.description_input = QLineEdit()
+        self.description_input.setFont(large_font)
+        self.price_input = QLineEdit()
+        self.price_input.setFont(large_font)
+
+        form_layout.addRow("الوصف:", self.description_input)
+        form_layout.addRow("المبلغ:", self.price_input)
+        form_layout.setAlignment(Qt.AlignRight)
+
+        # Button styles, sizes, and font
+        button_font = QFont("Arial", 14)
+
+        # Add Expense Button
+        self.add_expense_button = QPushButton("إضافة")
+        self.add_expense_button.setFont(button_font)
+        self.add_expense_button.setFixedSize(QSize(150, 40))
+        self.add_expense_button.setStyleSheet("""
+            QPushButton {
+                background-color: #4CAF50; 
+                color: white; 
+                border: none; 
+                border-radius: 5px;
+            }
+            QPushButton:hover {
+                background-color: #45A049;
+            }
+        """)
+        self.add_expense_button.clicked.connect(self.add_expense)
+
+        # Remove Selected Button
+        self.remove_selected_button = QPushButton("إزالة المحدد")
+        self.remove_selected_button.setFont(button_font)
+        self.remove_selected_button.setFixedSize(QSize(200, 40))
+        self.remove_selected_button.setStyleSheet("""
+            QPushButton {
+                background-color: #f44336; 
+                color: white; 
+                border: none; 
+                border-radius: 5px;
+            }
+            QPushButton:hover {
+                background-color: #e53935;
+            }
+        """)
+        self.remove_selected_button.clicked.connect(self.remove_selected)
+
+        # Expenses Table
+        self.expenses_table = QTableWidget()
+        self.expenses_table.setColumnCount(2)
+        self.expenses_table.setHorizontalHeaderLabels(["الوصف", "المبلغ"])
+        self.expenses_table.setLayoutDirection(Qt.RightToLeft)
+
+        # Table styling
+        self.expenses_table.setFont(QFont("Arial", 16, QFont.Bold))
+        self.expenses_table.setMinimumSize(700, 400)
+        self.expenses_table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        column_width = 350
+        self.expenses_table.setColumnWidth(0, column_width)
+        self.expenses_table.setColumnWidth(1, column_width)
+
+        header = self.expenses_table.horizontalHeader()
+        header.setStyleSheet("QHeaderView::section { background-color: #333; color: white; font-weight: bold; padding: 10px; }")
+        header.setFont(QFont("Arial", 16, QFont.Bold))
+        header.setStretchLastSection(True)
+
+        self.expenses_table.verticalHeader().setDefaultSectionSize(50)
+        self.expenses_table.setAlternatingRowColors(True)
+        self.expenses_table.setStyleSheet("""
+            QTableWidget {
+                font-size: 16px;
+                border: 1px solid #ddd;
+                gridline-color: #ddd;
+            }
+            QTableWidget::item {
+                text-align: center;
+                font-weight: bold;
+            }
+        """)
+
+        self.layout.addWidget(self.expenses_table)
+        self.layout.addLayout(form_layout)
+
+        button_layout = QHBoxLayout()
+        button_layout.addStretch()
+        button_layout.addWidget(self.add_expense_button)
+        button_layout.addWidget(self.remove_selected_button)
+        button_layout.addStretch()
+        self.layout.addLayout(button_layout)
+
+        self.setLayout(self.layout)
+        self.load_expenses_to_table()
+        
+
+    def load_expenses_to_table(self):
+        for expense in self.data.get("expenses", []):
+            row_position = self.expenses_table.rowCount()
+            self.expenses_table.insertRow(row_position)
+            description_item = QTableWidgetItem(expense["description"])
+            description_item.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+            self.expenses_table.setItem(row_position, 0, description_item)
+            amount_item = QTableWidgetItem(str(expense["amount"]))
+            amount_item.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+            self.expenses_table.setItem(row_position, 1, amount_item)
+
+    def add_expense(self):
+        description = self.description_input.text()
+        amount = self.price_input.text()
+
+        if not description or not amount:
+            QMessageBox.warning(self, "خطأ في الإدخال", "يرجى ملء جميع الحقول.")
+            return
+
+        try:
+            amount = float(amount)
+        except ValueError:
+            QMessageBox.warning(self, "خطأ في الإدخال", "يرجى إدخال مبلغ صحيح.")
+            return
+
+        expense_data = {"description": description, "amount": amount}
+        self.data["expenses"].append(expense_data)
+
+        row_position = self.expenses_table.rowCount()
+        self.expenses_table.insertRow(row_position)
+        description_item = QTableWidgetItem(description)
+        description_item.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        self.expenses_table.setItem(row_position, 0, description_item)
+        amount_item = QTableWidgetItem(str(amount))
+        amount_item.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
+        self.expenses_table.setItem(row_position, 1, amount_item)
+
+        QMessageBox.information(self, "تمت الإضافة", f"تمت إضافة المصروف:\nالوصف: {description}\nالمبلغ: {amount}")
+        self.description_input.clear()
+        self.price_input.clear()
+
+    def remove_selected(self):
+        selected_indexes = self.expenses_table.selectedIndexes()
+
+        if selected_indexes:
+            rows_to_remove = set(index.row() for index in selected_indexes if index.column() == 0)
+
+            if rows_to_remove:
+                for row in sorted(rows_to_remove, reverse=True):
+                    # Remove data from the data source
+                    description = self.expenses_table.item(row, 0).text()
+                    amount = self.expenses_table.item(row, 1).text()
+
+                    self.data["expenses"] = [
+                        expense for expense in self.data["expenses"]
+                        if not (expense["description"] == description and str(expense["amount"]) == amount)
+                    ]
+
+                    # Remove row from the table
+                    self.expenses_table.removeRow(row)
+
+                QMessageBox.information(self, "تم الحذف", "تمت إزالة المصروفات المحددة.")
+            else:
+                QMessageBox.warning(self, "خطأ في الاختيار", "يرجى اختيار المصروفات من عمود الوصف.")
+        else:
+            QMessageBox.warning(self, "خطأ في الاختيار", "يرجى اختيار المصروفات المراد إزالتها.")
 
 
 
