@@ -1200,7 +1200,7 @@ class ExpensesTab(QWidget):
         self.layout.addLayout(button_layout)
 
         self.setLayout(self.layout)
-        self.load_expenses_to_table()
+        self.load_expenses_to_table()   
         
 
     def load_expenses_to_table(self):

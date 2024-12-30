@@ -1,446 +1,570 @@
 ('C:\\Users\\Ahmed '
  'Tarek\\OneDrive\\Desktop\\BarberShopApp\\BekoBarber\\build\\barbershop_app\\PYZ-00.pyz',
- [('PyQt5',
-   'c:\\Users\\Ahmed '
-   'Tarek\\OneDrive\\Desktop\\BarberShopApp\\.venv\\Lib\\site-packages\\PyQt5\\__init__.py',
-   'PYMODULE'),
-  ('_compat_pickle',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\_compat_pickle.py',
-   'PYMODULE'),
-  ('_compression',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\_compression.py',
-   'PYMODULE'),
-  ('_py_abc',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\_py_abc.py',
-   'PYMODULE'),
-  ('_pydatetime',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\_pydatetime.py',
-   'PYMODULE'),
-  ('_pydecimal',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\_pydecimal.py',
-   'PYMODULE'),
-  ('_pyi_rth_utils',
-   'c:\\Users\\Ahmed '
-   'Tarek\\OneDrive\\Desktop\\BarberShopApp\\.venv\\Lib\\site-packages\\PyInstaller\\fake-modules\\_pyi_rth_utils\\__init__.py',
-   'PYMODULE'),
-  ('_pyi_rth_utils.qt',
-   'c:\\Users\\Ahmed '
-   'Tarek\\OneDrive\\Desktop\\BarberShopApp\\.venv\\Lib\\site-packages\\PyInstaller\\fake-modules\\_pyi_rth_utils\\qt.py',
-   'PYMODULE'),
-  ('_strptime',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\_strptime.py',
-   'PYMODULE'),
-  ('_threading_local',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\_threading_local.py',
-   'PYMODULE'),
-  ('argparse',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\argparse.py',
-   'PYMODULE'),
-  ('ast',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\ast.py',
-   'PYMODULE'),
-  ('base64',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\base64.py',
-   'PYMODULE'),
-  ('bisect',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\bisect.py',
-   'PYMODULE'),
-  ('bz2',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\bz2.py',
-   'PYMODULE'),
-  ('calendar',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\calendar.py',
-   'PYMODULE'),
-  ('contextlib',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\contextlib.py',
-   'PYMODULE'),
-  ('contextvars',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\contextvars.py',
-   'PYMODULE'),
-  ('copy',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\copy.py',
-   'PYMODULE'),
-  ('csv',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\csv.py',
-   'PYMODULE'),
-  ('dataclasses',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\dataclasses.py',
-   'PYMODULE'),
-  ('datetime',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\datetime.py',
-   'PYMODULE'),
-  ('decimal',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\decimal.py',
-   'PYMODULE'),
-  ('dis',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\dis.py',
-   'PYMODULE'),
-  ('email',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\email\\__init__.py',
-   'PYMODULE'),
-  ('email._encoded_words',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\email\\_encoded_words.py',
-   'PYMODULE'),
-  ('email._header_value_parser',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\email\\_header_value_parser.py',
-   'PYMODULE'),
-  ('email._parseaddr',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\email\\_parseaddr.py',
-   'PYMODULE'),
-  ('email._policybase',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\email\\_policybase.py',
-   'PYMODULE'),
-  ('email.base64mime',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\email\\base64mime.py',
-   'PYMODULE'),
-  ('email.charset',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\email\\charset.py',
-   'PYMODULE'),
-  ('email.contentmanager',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\email\\contentmanager.py',
-   'PYMODULE'),
-  ('email.encoders',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\email\\encoders.py',
-   'PYMODULE'),
-  ('email.errors',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\email\\errors.py',
-   'PYMODULE'),
-  ('email.feedparser',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\email\\feedparser.py',
-   'PYMODULE'),
-  ('email.generator',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\email\\generator.py',
-   'PYMODULE'),
-  ('email.header',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\email\\header.py',
-   'PYMODULE'),
-  ('email.headerregistry',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\email\\headerregistry.py',
-   'PYMODULE'),
-  ('email.iterators',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\email\\iterators.py',
-   'PYMODULE'),
-  ('email.message',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\email\\message.py',
-   'PYMODULE'),
-  ('email.parser',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\email\\parser.py',
-   'PYMODULE'),
-  ('email.policy',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\email\\policy.py',
-   'PYMODULE'),
-  ('email.quoprimime',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\email\\quoprimime.py',
-   'PYMODULE'),
-  ('email.utils',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\email\\utils.py',
-   'PYMODULE'),
-  ('fnmatch',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\fnmatch.py',
-   'PYMODULE'),
-  ('fractions',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\fractions.py',
-   'PYMODULE'),
-  ('getopt',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\getopt.py',
-   'PYMODULE'),
-  ('gettext',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\gettext.py',
-   'PYMODULE'),
-  ('gzip',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\gzip.py',
-   'PYMODULE'),
-  ('hashlib',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\hashlib.py',
+ [('inspect',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\inspect.py',
    'PYMODULE'),
   ('importlib',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\importlib\\__init__.py',
-   'PYMODULE'),
-  ('importlib._abc',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\importlib\\_abc.py',
-   'PYMODULE'),
-  ('importlib._bootstrap',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\importlib\\_bootstrap.py',
-   'PYMODULE'),
-  ('importlib._bootstrap_external',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\importlib\\_bootstrap_external.py',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\importlib\\__init__.py',
    'PYMODULE'),
   ('importlib.abc',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\importlib\\abc.py',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\importlib\\abc.py',
    'PYMODULE'),
-  ('importlib.machinery',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\importlib\\machinery.py',
+  ('importlib._bootstrap_external',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\importlib\\_bootstrap_external.py',
    'PYMODULE'),
-  ('importlib.metadata',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\importlib\\metadata\\__init__.py',
+  ('importlib._bootstrap',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\importlib\\_bootstrap.py',
    'PYMODULE'),
-  ('importlib.metadata._adapters',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\importlib\\metadata\\_adapters.py',
-   'PYMODULE'),
-  ('importlib.metadata._collections',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\importlib\\metadata\\_collections.py',
-   'PYMODULE'),
-  ('importlib.metadata._functools',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\importlib\\metadata\\_functools.py',
-   'PYMODULE'),
-  ('importlib.metadata._itertools',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\importlib\\metadata\\_itertools.py',
-   'PYMODULE'),
-  ('importlib.metadata._meta',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\importlib\\metadata\\_meta.py',
-   'PYMODULE'),
-  ('importlib.metadata._text',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\importlib\\metadata\\_text.py',
-   'PYMODULE'),
-  ('importlib.readers',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\importlib\\readers.py',
-   'PYMODULE'),
-  ('importlib.resources',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\importlib\\resources\\__init__.py',
-   'PYMODULE'),
-  ('importlib.resources._adapters',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\importlib\\resources\\_adapters.py',
-   'PYMODULE'),
-  ('importlib.resources._common',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\importlib\\resources\\_common.py',
-   'PYMODULE'),
-  ('importlib.resources._itertools',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\importlib\\resources\\_itertools.py',
-   'PYMODULE'),
-  ('importlib.resources._legacy',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\importlib\\resources\\_legacy.py',
-   'PYMODULE'),
-  ('importlib.resources.abc',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\importlib\\resources\\abc.py',
-   'PYMODULE'),
-  ('importlib.resources.readers',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\importlib\\resources\\readers.py',
-   'PYMODULE'),
-  ('importlib.util',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\importlib\\util.py',
-   'PYMODULE'),
-  ('inspect',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\inspect.py',
-   'PYMODULE'),
-  ('ipaddress',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\ipaddress.py',
-   'PYMODULE'),
-  ('json',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\json\\__init__.py',
-   'PYMODULE'),
-  ('json.decoder',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\json\\decoder.py',
-   'PYMODULE'),
-  ('json.encoder',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\json\\encoder.py',
-   'PYMODULE'),
-  ('json.scanner',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\json\\scanner.py',
-   'PYMODULE'),
-  ('logging',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\logging\\__init__.py',
-   'PYMODULE'),
-  ('lzma',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\lzma.py',
-   'PYMODULE'),
-  ('numbers',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\numbers.py',
-   'PYMODULE'),
-  ('opcode',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\opcode.py',
-   'PYMODULE'),
-  ('pathlib',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\pathlib.py',
-   'PYMODULE'),
-  ('pickle',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\pickle.py',
-   'PYMODULE'),
-  ('pkgutil',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\pkgutil.py',
-   'PYMODULE'),
-  ('pprint',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\pprint.py',
-   'PYMODULE'),
-  ('py_compile',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\py_compile.py',
-   'PYMODULE'),
-  ('quopri',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\quopri.py',
-   'PYMODULE'),
-  ('random',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\random.py',
-   'PYMODULE'),
-  ('selectors',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\selectors.py',
-   'PYMODULE'),
-  ('shutil',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\shutil.py',
-   'PYMODULE'),
-  ('signal',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\signal.py',
-   'PYMODULE'),
-  ('socket',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\socket.py',
-   'PYMODULE'),
-  ('statistics',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\statistics.py',
-   'PYMODULE'),
-  ('string',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\string.py',
-   'PYMODULE'),
-  ('stringprep',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\stringprep.py',
-   'PYMODULE'),
-  ('subprocess',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\subprocess.py',
-   'PYMODULE'),
-  ('tarfile',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\tarfile.py',
-   'PYMODULE'),
-  ('tempfile',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\tempfile.py',
+  ('argparse',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\argparse.py',
    'PYMODULE'),
   ('textwrap',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\textwrap.py',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\textwrap.py',
    'PYMODULE'),
-  ('threading',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\threading.py',
+  ('copy',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\copy.py',
+   'PYMODULE'),
+  ('gettext',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\gettext.py',
+   'PYMODULE'),
+  ('struct',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\struct.py',
+   'PYMODULE'),
+  ('ast',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\ast.py',
    'PYMODULE'),
   ('token',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\token.py',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\token.py',
    'PYMODULE'),
-  ('tokenize',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\tokenize.py',
+  ('importlib.machinery',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\importlib\\machinery.py',
+   'PYMODULE'),
+  ('dis',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\dis.py',
+   'PYMODULE'),
+  ('opcode',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\opcode.py',
+   'PYMODULE'),
+  ('pkgutil',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\pkgutil.py',
+   'PYMODULE'),
+  ('ntpath',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\ntpath.py',
+   'PYMODULE'),
+  ('string',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\string.py',
+   'PYMODULE'),
+  ('genericpath',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\genericpath.py',
+   'PYMODULE'),
+  ('stat',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\stat.py',
+   'PYMODULE'),
+  ('importlib.util',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\importlib\\util.py',
+   'PYMODULE'),
+  ('contextlib',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\contextlib.py',
+   'PYMODULE'),
+  ('subprocess',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\subprocess.py',
+   'PYMODULE'),
+  ('selectors',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\selectors.py',
+   'PYMODULE'),
+  ('threading',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\threading.py',
+   'PYMODULE'),
+  ('_threading_local',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\_threading_local.py',
+   'PYMODULE'),
+  ('signal',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\signal.py',
+   'PYMODULE'),
+  ('_strptime',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\_strptime.py',
+   'PYMODULE'),
+  ('calendar',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\calendar.py',
    'PYMODULE'),
   ('tracemalloc',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\tracemalloc.py',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\tracemalloc.py',
    'PYMODULE'),
-  ('typing',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\typing.py',
+  ('pickle',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\pickle.py',
    'PYMODULE'),
-  ('urllib',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\urllib\\__init__.py',
+  ('pprint',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\pprint.py',
    'PYMODULE'),
-  ('urllib.parse',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\urllib\\parse.py',
+  ('doctest',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\doctest.py',
+   'PYMODULE'),
+  ('unittest',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\unittest\\__init__.py',
+   'PYMODULE'),
+  ('unittest.signals',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\unittest\\signals.py',
+   'PYMODULE'),
+  ('unittest.main',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\unittest\\main.py',
+   'PYMODULE'),
+  ('unittest.runner',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\unittest\\runner.py',
+   'PYMODULE'),
+  ('unittest.loader',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\unittest\\loader.py',
+   'PYMODULE'),
+  ('unittest.suite',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\unittest\\suite.py',
+   'PYMODULE'),
+  ('unittest.case',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\unittest\\case.py',
+   'PYMODULE'),
+  ('logging',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\logging\\__init__.py',
+   'PYMODULE'),
+  ('unittest.result',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\unittest\\result.py',
+   'PYMODULE'),
+  ('unittest.util',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\unittest\\util.py',
+   'PYMODULE'),
+  ('pdb',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\pdb.py',
+   'PYMODULE'),
+  ('getopt',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\getopt.py',
+   'PYMODULE'),
+  ('pydoc',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\pydoc.py',
+   'PYMODULE'),
+  ('webbrowser',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\webbrowser.py',
+   'PYMODULE'),
+  ('socket',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\socket.py',
+   'PYMODULE'),
+  ('shutil',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\shutil.py',
    'PYMODULE'),
   ('zipfile',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\zipfile\\__init__.py',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\zipfile.py',
    'PYMODULE'),
-  ('zipfile._path',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\zipfile\\_path\\__init__.py',
+  ('py_compile',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\py_compile.py',
    'PYMODULE'),
-  ('zipfile._path.glob',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\zipfile\\_path\\glob.py',
+  ('tarfile',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\tarfile.py',
    'PYMODULE'),
-  ('zipimport',
-   'C:\\Users\\Ahmed '
-   'Tarek\\AppData\\Local\\Programs\\Python\\Python312\\Lib\\zipimport.py',
+  ('gzip',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\gzip.py',
+   'PYMODULE'),
+  ('_compression',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\_compression.py',
+   'PYMODULE'),
+  ('lzma',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\lzma.py',
+   'PYMODULE'),
+  ('bz2',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\bz2.py',
+   'PYMODULE'),
+  ('email.message',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\email\\message.py',
+   'PYMODULE'),
+  ('email.policy',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\email\\policy.py',
+   'PYMODULE'),
+  ('email.contentmanager',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\email\\contentmanager.py',
+   'PYMODULE'),
+  ('email.quoprimime',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\email\\quoprimime.py',
+   'PYMODULE'),
+  ('email.headerregistry',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\email\\headerregistry.py',
+   'PYMODULE'),
+  ('email._header_value_parser',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\email\\_header_value_parser.py',
+   'PYMODULE'),
+  ('urllib',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\urllib\\__init__.py',
+   'PYMODULE'),
+  ('email.iterators',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\email\\iterators.py',
+   'PYMODULE'),
+  ('email.generator',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\email\\generator.py',
+   'PYMODULE'),
+  ('random',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\random.py',
+   'PYMODULE'),
+  ('bisect',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\bisect.py',
+   'PYMODULE'),
+  ('hashlib',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\hashlib.py',
+   'PYMODULE'),
+  ('email._encoded_words',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\email\\_encoded_words.py',
+   'PYMODULE'),
+  ('base64',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\base64.py',
+   'PYMODULE'),
+  ('email.charset',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\email\\charset.py',
+   'PYMODULE'),
+  ('email.encoders',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\email\\encoders.py',
+   'PYMODULE'),
+  ('email.base64mime',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\email\\base64mime.py',
+   'PYMODULE'),
+  ('email._policybase',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\email\\_policybase.py',
+   'PYMODULE'),
+  ('email.header',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\email\\header.py',
+   'PYMODULE'),
+  ('email.errors',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\email\\errors.py',
+   'PYMODULE'),
+  ('email.utils',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\email\\utils.py',
+   'PYMODULE'),
+  ('email._parseaddr',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\email\\_parseaddr.py',
+   'PYMODULE'),
+  ('email',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\email\\__init__.py',
+   'PYMODULE'),
+  ('email.parser',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\email\\parser.py',
+   'PYMODULE'),
+  ('email.feedparser',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\email\\feedparser.py',
+   'PYMODULE'),
+  ('quopri',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\quopri.py',
+   'PYMODULE'),
+  ('uu',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\uu.py',
+   'PYMODULE'),
+  ('optparse',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\optparse.py',
+   'PYMODULE'),
+  ('http.server',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\http\\server.py',
+   'PYMODULE'),
+  ('http',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\http\\__init__.py',
+   'PYMODULE'),
+  ('socketserver',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\socketserver.py',
+   'PYMODULE'),
+  ('posixpath',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\posixpath.py',
+   'PYMODULE'),
+  ('mimetypes',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\mimetypes.py',
+   'PYMODULE'),
+  ('http.client',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\http\\client.py',
+   'PYMODULE'),
+  ('ssl',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\ssl.py',
+   'PYMODULE'),
+  ('html',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\html\\__init__.py',
+   'PYMODULE'),
+  ('html.entities',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\html\\entities.py',
+   'PYMODULE'),
+  ('pydoc_data.topics',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\pydoc_data\\topics.py',
+   'PYMODULE'),
+  ('pydoc_data',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\pydoc_data\\__init__.py',
+   'PYMODULE'),
+  ('tty',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\tty.py',
+   'PYMODULE'),
+  ('tempfile',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\tempfile.py',
+   'PYMODULE'),
+  ('urllib.parse',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\urllib\\parse.py',
+   'PYMODULE'),
+  ('sysconfig',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\sysconfig.py',
+   'PYMODULE'),
+  ('_osx_support',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\_osx_support.py',
+   'PYMODULE'),
+  ('distutils.log',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\distutils\\log.py',
+   'PYMODULE'),
+  ('distutils',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\distutils\\__init__.py',
+   'PYMODULE'),
+  ('platform',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\platform.py',
+   'PYMODULE'),
+  ('plistlib',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\plistlib.py',
+   'PYMODULE'),
+  ('xml.parsers.expat',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\xml\\parsers\\expat.py',
+   'PYMODULE'),
+  ('xml.parsers',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\xml\\parsers\\__init__.py',
+   'PYMODULE'),
+  ('xml',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\xml\\__init__.py',
+   'PYMODULE'),
+  ('xml.sax.expatreader',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\xml\\sax\\expatreader.py',
+   'PYMODULE'),
+  ('xml.sax.saxutils',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\xml\\sax\\saxutils.py',
+   'PYMODULE'),
+  ('urllib.request',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\urllib\\request.py',
+   'PYMODULE'),
+  ('getpass',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\getpass.py',
+   'PYMODULE'),
+  ('nturl2path',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\nturl2path.py',
+   'PYMODULE'),
+  ('ftplib',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\ftplib.py',
+   'PYMODULE'),
+  ('netrc',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\netrc.py',
+   'PYMODULE'),
+  ('http.cookiejar',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\http\\cookiejar.py',
+   'PYMODULE'),
+  ('urllib.response',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\urllib\\response.py',
+   'PYMODULE'),
+  ('urllib.error',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\urllib\\error.py',
+   'PYMODULE'),
+  ('xml.sax',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\xml\\sax\\__init__.py',
+   'PYMODULE'),
+  ('xml.sax.handler',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\xml\\sax\\handler.py',
+   'PYMODULE'),
+  ('xml.sax._exceptions',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\xml\\sax\\_exceptions.py',
+   'PYMODULE'),
+  ('xml.sax.xmlreader',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\xml\\sax\\xmlreader.py',
+   'PYMODULE'),
+  ('runpy',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\runpy.py',
+   'PYMODULE'),
+  ('shlex',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\shlex.py',
+   'PYMODULE'),
+  ('glob',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\glob.py',
+   'PYMODULE'),
+  ('code',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\code.py',
+   'PYMODULE'),
+  ('codeop',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\codeop.py',
+   'PYMODULE'),
+  ('bdb',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\bdb.py',
+   'PYMODULE'),
+  ('cmd',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\cmd.py',
+   'PYMODULE'),
+  ('difflib',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\difflib.py',
+   'PYMODULE'),
+  ('__future__',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\__future__.py',
+   'PYMODULE'),
+  ('_compat_pickle',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\_compat_pickle.py',
+   'PYMODULE'),
+  ('fnmatch',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\fnmatch.py',
+   'PYMODULE'),
+  ('stringprep',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\stringprep.py',
+   'PYMODULE'),
+  ('typing',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\typing.py',
+   'PYMODULE'),
+  ('_py_abc',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\_py_abc.py',
+   'PYMODULE'),
+  ('datetime',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\datetime.py',
+   'PYMODULE'),
+  ('PyQt5',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\site-packages\\PyQt5\\__init__.py',
+   'PYMODULE'),
+  ('os',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\os.py',
+   'PYMODULE'),
+  ('json',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\json\\__init__.py',
+   'PYMODULE'),
+  ('json.encoder',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\json\\encoder.py',
+   'PYMODULE'),
+  ('json.decoder',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\json\\decoder.py',
+   'PYMODULE'),
+  ('json.scanner',
+   'c:\\users\\ahmed '
+   'tarek\\appdata\\local\\programs\\python\\python37\\lib\\json\\scanner.py',
    'PYMODULE')])
