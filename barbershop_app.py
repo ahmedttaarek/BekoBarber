@@ -15,9 +15,9 @@ from PyQt5.QtWidgets import (
     QTabWidget,
     QFormLayout,
     QLineEdit,
-    QHeaderView,
     QSizePolicy,
-    QComboBox
+    QComboBox,
+    QAbstractItemView
 )
 from PyQt5.QtGui import QFont, QPainter, QPixmap, QIcon  
 from PyQt5.QtCore import Qt, QSize, QSizeF, QRect
@@ -128,26 +128,22 @@ class PackagesTab(QWidget):
         self.earnings_tab = earnings_tab
         self.layout = QVBoxLayout()
 
-        # Set layout direction to right-to-left
         self.setLayoutDirection(Qt.RightToLeft)
-
-        # Adjusted font for larger screens
+        
         large_font = QFont("Arial", 16)
-
         form_layout = QFormLayout()
+
         self.description_input = QLineEdit()
         self.description_input.setFont(large_font)
         self.price_input = QLineEdit()
         self.price_input.setFont(large_font)
-        
+
         form_layout.addRow("الوصف:", self.description_input)
         form_layout.addRow("السعر:", self.price_input)
         form_layout.setAlignment(Qt.AlignRight)
 
-        # Customize button styles, sizes, and font
         button_font = QFont("Arial", 14)
-        
-        # Add Package Button
+
         self.add_package_button = QPushButton("أضف باقة")
         self.add_package_button.setFont(button_font)
         self.add_package_button.setFixedSize(QSize(200, 50))
@@ -159,12 +155,11 @@ class PackagesTab(QWidget):
                 border-radius: 5px;
             }
             QPushButton:hover {
-                background-color: #45A049;  /* Darker green on hover */
+                background-color: #45A049;
             }
         """)
         self.add_package_button.clicked.connect(self.add_package)
 
-        # Checkout Button
         self.checkout_button = QPushButton("الدفع للباقة المختارة")
         self.checkout_button.setFont(button_font)
         self.checkout_button.setFixedSize(QSize(250, 50))
@@ -176,12 +171,11 @@ class PackagesTab(QWidget):
                 border-radius: 5px;
             }
             QPushButton:hover {
-                background-color: #1E88E5;  /* Darker blue on hover */
+                background-color: #1E88E5;
             }
         """)
         self.checkout_button.clicked.connect(self.checkout)
 
-        # Delete Package Button
         self.delete_package_button = QPushButton("احذف الباقة المختارة")
         self.delete_package_button.setFont(button_font)
         self.delete_package_button.setFixedSize(QSize(240, 50))
@@ -193,57 +187,37 @@ class PackagesTab(QWidget):
                 border-radius: 5px;
             }
             QPushButton:hover {
-                background-color: #e53935;  /* Darker red on hover */
+                background-color: #e53935;
             }
         """)
         self.delete_package_button.clicked.connect(self.delete_package)
 
-        # Enhanced table style
         self.packages_table = QTableWidget()
         self.packages_table.setColumnCount(2)
         self.packages_table.setHorizontalHeaderLabels(["الوصف", "السعر"])
-
-        # Set layout direction for the table
-        self.packages_table.setLayoutDirection(Qt.RightToLeft)
-
-        # Adjust table size, font, and readability for large screens
-        self.packages_table.setFont(QFont("Arial", 18, QFont.Bold))  # Set larger and bold font
+        self.packages_table.setFont(QFont("Arial", 18, QFont.Bold))
         self.packages_table.setMinimumSize(900, 500)
         self.packages_table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.packages_table.setColumnWidth(0, 400)
+        self.packages_table.setColumnWidth(1, 400)
+        self.packages_table.setEditTriggers(QTableWidget.DoubleClicked | QTableWidget.EditKeyPressed)
+        self.packages_table.itemChanged.connect(self.edit_package)
 
-        # Set equal column widths
-        column_width = 400  # Adjust this value as needed
-        self.packages_table.setColumnWidth(0, column_width)
-        self.packages_table.setColumnWidth(1, column_width)
-
-        # Style the header
         header = self.packages_table.horizontalHeader()
         header.setStyleSheet("QHeaderView::section { background-color: #333; color: white; font-weight: bold; padding: 16px; }")
-        header.setFont(QFont("Arial", 18, QFont.Bold))  # Header font size and style
+        header.setFont(QFont("Arial", 18, QFont.Bold))
         header.setStretchLastSection(True)
 
-        # Row height and alternating colors with hover effect
         self.packages_table.verticalHeader().setDefaultSectionSize(50)
         self.packages_table.setAlternatingRowColors(True)
-        self.packages_table.setStyleSheet(""" 
-                QTableWidget {
-                    font-size: 18px;  /* Increased font size for table cells */
-                    border: 1px solid #ddd;
-                    gridline-color: #ddd;
-                }
-                QHeaderView::section {
-                    font-size: 18px;  /* Header font size */
-                    background-color: #333;
-                    color: white;
-                    font-weight: bold;
-                    padding: 15px;
-                }
-                QTableWidget::item {
-                    padding: 10px;
-                    text-align: center;  /* Center text in all table cells */
-                }
-            """)
-        self.packages_table.verticalHeader().setDefaultSectionSize(50)  # Adjust row height
+        self.packages_table.setStyleSheet("""
+            QTableWidget {
+                font-size: 18px;
+                border: 1px solid #ddd;
+                gridline-color: #ddd;
+            }
+        """)
+
         self.layout.addWidget(self.packages_table)
         self.layout.addLayout(form_layout)
 
@@ -256,19 +230,17 @@ class PackagesTab(QWidget):
         self.layout.addLayout(button_layout)
 
         self.setLayout(self.layout)
-
         self.load_packages_to_table()
 
     def load_packages_to_table(self):
         for package in self.data.get("packages", []):
             row_position = self.packages_table.rowCount()
             self.packages_table.insertRow(row_position)
-            
-            # Center-aligned items
+
             description_item = QTableWidgetItem(package["description"])
             description_item.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
             self.packages_table.setItem(row_position, 0, description_item)
-            
+
             price_item = QTableWidgetItem(str(package["price"]))
             price_item.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
             self.packages_table.setItem(row_position, 1, price_item)
@@ -276,49 +248,67 @@ class PackagesTab(QWidget):
     def add_package(self):
         description = self.description_input.text()
         price = self.price_input.text()
-        
+
         if not description or not price:
             QMessageBox.warning(self, "خطأ في الإدخال", "يرجى ملء جميع الحقول.")
             return
-        
-        package_data = {"description": description, "price": float(price)}
-        self.data["packages"].append(package_data)
-        
+
+        try:
+            price = float(price)
+        except ValueError:
+            QMessageBox.warning(self, "خطأ في الإدخال", "السعر يجب أن يكون رقمًا صالحًا.")
+            return
+
+        package_data = {"description": description, "price": price}
+        self.data.setdefault("packages", []).append(package_data)
+
         row_position = self.packages_table.rowCount()
         self.packages_table.insertRow(row_position)
-        
+
         description_item = QTableWidgetItem(description)
         description_item.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
         self.packages_table.setItem(row_position, 0, description_item)
-        
-        price_item = QTableWidgetItem(price)
+
+        price_item = QTableWidgetItem(str(price))
         price_item.setTextAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
         self.packages_table.setItem(row_position, 1, price_item)
-        
+
         QMessageBox.information(self, "تم إضافة الباقة", f"تمت إضافة الباقة:\nالوصف: {description}\nالسعر: {price}")
-        
+
         self.description_input.clear()
         self.price_input.clear()
 
+    def edit_package(self, item):
+        row = item.row()
+        column = item.column()
+
+        if column == 0:
+            self.data["packages"][row]["description"] = item.text()
+        elif column == 1:
+            try:
+                price = float(item.text())
+                self.data["packages"][row]["price"] = price
+            except ValueError:
+                QMessageBox.warning(self, "خطأ في الإدخال", "السعر يجب أن يكون رقمًا صالحًا.")
+                item.setText(str(self.data["packages"][row]["price"]))
+
     def checkout(self):
-            current_row = self.packages_table.currentRow()
-            if current_row != -1:
-                description = self.packages_table.item(current_row, 0).text()
-                price = self.packages_table.item(current_row, 1).text()
+        current_row = self.packages_table.currentRow()
+        if current_row != -1:
+            description = self.packages_table.item(current_row, 0).text()
+            price = self.packages_table.item(current_row, 1).text()
 
-                # Create the receipt message with line breaks for organization
-                receipt_message = (
-                    f"السعر: {price}\n\n"  # Price in Arabic
-                    f"الباقة: {description}\n\n"  # Package in Arabic
-                    "صالون بيكو تشرف بوجود حضراتكم"  # Footer in Arabic
-                )
+            receipt_message = (
+                f"السعر: {price}\n\n"
+                f"الباقة: {description}\n\n"
+                "صالون بيكو تشرف بوجود حضراتكم"
+            )
 
-                # Preview the receipt before printing
-                self.preview_receipt(receipt_message)
-                # Add the earnings after printing is confirmed
-                self.earnings_tab.add_earning(price)
-            else:
-                QMessageBox.warning(self, "خطأ في الاختيار", "يرجى اختيار باقة للدفع.")
+            self.preview_receipt(receipt_message)
+            self.earnings_tab.add_earning(float(price))
+        else:
+            QMessageBox.warning(self, "خطأ في الاختيار", "يرجى اختيار باقة للدفع.")
+
 
     def preview_receipt(self, message):
         # Create a printer object for previewing

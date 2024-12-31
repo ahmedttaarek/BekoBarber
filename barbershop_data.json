@@ -1,12 +1,16 @@
 {
     "packages": [
         {
-            "description": "\u0634\u0639\u0631 + \u0630\u0642\u0646",
-            "price": "150"
+            "description": "sdfdf",
+            "price": 400.0
         },
         {
-            "description": "\u0634\u0639\u0631 + \u0630\u0642\u0646 + \u0633\u0634\u0648\u0627\u0631",
+            "description": "mask",
             "price": 200.0
+        },
+        {
+            "description": "dfgfg",
+            "price": 453.0
         }
     ],
     "inventory": [
@@ -26,7 +30,16 @@
             "price": 300
         }
     ],
-    "earnings": [],
+    "earnings": [
+        {
+            "date": "2024-12-31 08:42:01",
+            "amount": 200.0
+        },
+        {
+            "date": "2024-12-31 08:42:23",
+            "amount": 200.0
+        }
+    ],
     "customers": [
         {
             "name": "\u0637\u0627\u0631\u0642 \u0639\u0627\u0634\u0648\u0631",
